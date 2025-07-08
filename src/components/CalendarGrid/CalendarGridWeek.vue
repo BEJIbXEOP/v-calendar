@@ -30,8 +30,8 @@ const props = defineProps<{
 
 const { isMonthly, eventsContext } = useCalendarGrid();
 
-const minDayIndex = computed(() => props.days[0].dayIndex);
-const maxDayIndex = computed(() => props.days[props.days.length - 1].dayIndex);
+const minDayIndex = computed(() => props.days[0]?.dayIndex ?? 0);
+const maxDayIndex = computed(() => props.days[props.days.length - 1]?.dayIndex ?? 0);
 
 const cells = computed(() => {
   const result: Array<DateRangeCell<Event>> = [];
