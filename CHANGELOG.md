@@ -1,8 +1,8 @@
-## 1.0.0 (`v-calendar-3`)
+## 1.0.1 (`v-calendar-3`)
 
 ### Breaking Changes
 
-* The package is published as `v-calendar-3` at version `1.0.0`. Replace imports
+* The package is published as `v-calendar-3` at version `1.0.1`. Replace imports
   from `v-calendar-fixed` with `v-calendar-3`; this version reset is a new package
   lineage, not a downgrade from `v-calendar-fixed@3.1.9`.
 * Package development now requires Node.js `^20.19.0 || >=22.12.0`. The
@@ -27,6 +27,11 @@
 * Upgrade the Vue 3, TypeScript, Vite, Vitest, ESLint, and Playwright toolchain.
 * Add unit and browser regression suites, including desktop and touch WebKit.
 * Generate ESM, CommonJS, CSS, and bundled TypeScript declaration artifacts.
+
+### Styling
+
+* Expose stable CSS custom properties for calendar dimensions, header spacing,
+  day and highlight geometry, time-picker layout, and select controls.
 
 ## 3.0.0-alpha.7
 

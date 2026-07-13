@@ -9,6 +9,23 @@
     />
     <output id="selected-date">{{ selectedDateLabel }}</output>
 
+    <DatePicker
+      id="variable-calendar"
+      v-model="styledDate"
+      mode="dateTime"
+      :initial-page="initialPage"
+      style="
+        --vc-day-content-width: 31px;
+        --vc-day-content-height: 31px;
+        --vc-header-margin-top: 0px;
+        --vc-pane-min-width: 220px;
+        --vc-time-picker-flex-direction: row;
+        --vc-time-select-group-icon-display: none;
+        --vc-time-select-bg: rgb(1, 2, 3);
+        --vc-select-width: 22px;
+      "
+    />
+
     <Calendar id="explicit-light" :is-dark="false" />
     <Calendar id="explicit-dark" :is-dark="true" />
     <Calendar v-if="showAutomatic" id="automatic" is-dark="system" />
@@ -71,6 +88,7 @@ import { popoverDirective as vPopover } from '../../src/utils/popovers';
 
 const initialPage = { year: 2024, month: 1 };
 const selectedDate = ref<Date | null>(null);
+const styledDate = ref<Date | null>(new Date(2024, 0, 15, 12));
 const selectedDateLabel = computed(() => {
   if (!selectedDate.value) return '';
   const year = selectedDate.value.getFullYear();

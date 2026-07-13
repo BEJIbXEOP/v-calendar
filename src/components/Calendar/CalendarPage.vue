@@ -69,7 +69,9 @@ const { onWeeknumberClick } = useCalendar();
 
 <style lang="css">
 .vc-pane {
-  min-width: 250px;
+  min-width: var(--vc-pane-min-width);
+  max-width: var(--vc-pane-max-width);
+  justify-self: var(--vc-pane-justify-self);
 }
 
 .vc-weeknumber {
@@ -109,8 +111,10 @@ const { onWeeknumberClick } = useCalendar();
   position: relative;
   /* overflow: auto; */
   -webkit-overflow-scrolling: touch;
-  padding: 6px;
-  min-width: 232px;
+  padding: var(--vc-weeks-padding);
+  min-width: var(--vc-weeks-min-width);
+  max-width: var(--vc-weeks-max-width);
+  justify-self: var(--vc-weeks-justify-self);
   &.vc-show-weeknumbers-left {
     margin-left: var(--vc-weeknumber-offset-inside);
   }

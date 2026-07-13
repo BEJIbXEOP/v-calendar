@@ -128,12 +128,11 @@ const gridStyle = computed(() => {
 <style lang="css">
 .vc-header {
   display: grid;
-  grid-gap: 4px;
+  grid-gap: var(--vc-header-gap);
   align-items: center;
-  height: 30px;
-  margin-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  height: var(--vc-header-height);
+  margin-top: var(--vc-header-margin-top);
+  padding: var(--vc-header-padding);
 
   &.is-lg {
     font-size: var(--vc-text-lg);
@@ -172,11 +171,13 @@ const gridStyle = computed(() => {
 
   .vc-title {
     color: var(--vc-header-title-color);
+    font-size: var(--vc-header-title-font-size);
     font-weight: var(--vc-font-semibold);
+    text-transform: var(--vc-header-title-text-transform);
     white-space: nowrap;
-    padding: 0 8px;
+    padding: var(--vc-header-title-padding);
     margin: 0;
-    line-height: 30px;
+    line-height: var(--vc-header-title-line-height);
     &:hover {
       opacity: 0.75;
     }
@@ -187,10 +188,11 @@ const gridStyle = computed(() => {
     justify-content: center;
     align-items: center;
     color: var(--vc-header-arrow-color);
-    width: 28px;
-    height: 30px;
+    width: var(--vc-header-arrow-width);
+    height: var(--vc-header-arrow-height);
     margin: 0;
-    padding: 0;
+    padding: var(--vc-header-arrow-padding);
+    scale: var(--vc-header-arrow-scale);
     &:hover {
       background: var(--vc-header-arrow-hover-bg);
     }

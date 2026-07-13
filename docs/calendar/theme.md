@@ -211,9 +211,40 @@ If applying custom styles within a scoped component, then the `:deep()` pseudo-c
 
 ## CSS Variables
 
-Colors and other styles for both light and dark modes may be customized by overriding css variables defined within your own custom theme stylesheet.
+Colors, dimensions and component layout may be customized by overriding CSS
+variables in an application stylesheet. Set them on a calendar instance or a
+wrapper so unrelated components are not affected.
 
-Use the [default stylesheet](https://github.com/nathanreyes/v-calendar/blob/v3/src/styles/theme.css) as a guide.
+Use the [default stylesheet](../../src/styles/theme.css) as the authoritative
+list of variables and fallback values.
+
+### Layout variables
+
+```css
+.compact-calendar {
+  --vc-container-bg: transparent;
+  --vc-pane-min-width: 13rem;
+  --vc-pane-max-width: 14rem;
+  --vc-weeks-padding: 0 0.375rem 0.375rem;
+  --vc-weeks-min-width: 13rem;
+  --vc-day-min-height: 1.75rem;
+  --vc-day-content-font-size: 0.875rem;
+  --vc-day-content-width: 1.75rem;
+  --vc-day-content-height: 1.75rem;
+  --vc-day-content-line-height: 1.75rem;
+  --vc-highlight-width: 1.75rem;
+  --vc-highlight-height: 1.75rem;
+  --vc-header-margin-top: 0;
+  --vc-header-padding: 0.25rem 1rem 0;
+  --vc-header-arrow-scale: 0.75;
+  --vc-time-picker-flex-direction: row;
+  --vc-time-picker-padding: 0 0.5rem;
+  --vc-time-select-group-bg: transparent;
+  --vc-time-select-group-border-width: 0;
+  --vc-select-width: 1.25rem;
+  --vc-select-padding: 0;
+}
+```
 
 ### Adding a custom color
 

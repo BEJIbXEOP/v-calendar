@@ -244,7 +244,7 @@ export default defineComponent({
 <style>
 .vc-day {
   position: relative;
-  min-height: 32px;
+  min-height: var(--vc-day-min-height);
   z-index: 1;
   /* &.is-not-in-month * {
     opacity: 0;
@@ -297,11 +297,11 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: var(--vc-text-sm);
-  font-weight: var(--vc-font-medium);
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
+  font-size: var(--vc-day-content-font-size);
+  font-weight: var(--vc-day-content-font-weight);
+  width: var(--vc-day-content-width);
+  height: var(--vc-day-content-height);
+  line-height: var(--vc-day-content-line-height);
   border-radius: var(--vc-rounded-full);
   user-select: none;
   cursor: pointer;
@@ -329,8 +329,8 @@ export default defineComponent({
 }
 
 .vc-highlight {
-  width: 28px;
-  height: 28px;
+  width: var(--vc-highlight-width);
+  height: var(--vc-highlight-height);
   &.vc-highlight-base-start {
     width: 50% !important;
     border-radius: 0 !important;

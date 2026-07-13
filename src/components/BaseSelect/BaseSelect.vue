@@ -72,9 +72,9 @@ const selectedLabel = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 30px;
-  font-size: var(--vc-text-base);
-  font-weight: var(--vc-font-medium);
+  height: var(--vc-select-height);
+  font-size: var(--vc-select-font-size);
+  font-weight: var(--vc-select-font-weight);
   &.vc-has-icon {
     & select {
       padding: 0 27px 0 9px;
@@ -99,27 +99,27 @@ const selectedLabel = computed(() => {
     pointer-events: none;
   }
   & .vc-base-sizer {
-    font-size: var(--vc-text-base);
-    font-weight: var(--vc-font-medium);
+    font-size: var(--vc-select-font-size);
+    font-weight: var(--vc-select-font-weight);
     color: transparent;
     padding: 0px 8px;
     margin: 0;
   }
   & select {
-    display: inline-flex;
     justify-content: center;
     color: var(--vc-select-color);
     display: block;
     appearance: none;
     background-color: var(--vc-select-bg);
-    border-radius: var(--vc-rounded);
-    height: 30px;
-    width: max-content;
-    padding: 0px 7px;
+    border: var(--vc-select-border);
+    border-radius: var(--vc-select-border-radius);
+    height: var(--vc-select-height);
+    width: var(--vc-select-width);
+    padding: var(--vc-select-padding);
     margin: 0;
     line-height: var(--leading-none);
     text-indent: 0px;
-    background-image: none;
+    background-image: var(--vc-select-background-image);
     cursor: pointer;
     text-align: center;
     &:hover {

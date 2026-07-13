@@ -92,19 +92,20 @@ const {
 
 <style lang="css">
 .vc-time-picker {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px 4px;
+  display: var(--vc-time-picker-display);
+  flex-direction: var(--vc-time-picker-flex-direction);
+  align-items: var(--vc-time-picker-align-items);
+  justify-content: var(--vc-time-picker-justify-content);
+  align-content: var(--vc-time-picker-align-content);
+  padding: var(--vc-time-picker-padding);
+  gap: var(--vc-time-picker-gap);
   &.vc-invalid {
     pointer-events: none;
     opacity: 0.5;
   }
   &.vc-attached {
-    border-top: 1px solid var(--vc-time-picker-border);
-  }
-  > * + * {
-    margin-top: 4px;
+    border-top: var(--vc-time-picker-border-width)
+      var(--vc-time-picker-border-style) var(--vc-time-picker-border);
   }
 }
 
@@ -114,26 +115,29 @@ const {
   font-size: var(--vc-text-sm);
   font-weight: var(--vc-font-semibold);
   text-transform: uppercase;
-  margin-top: -4px;
-  padding-left: 4px;
-  padding-right: 4px;
+  width: var(--vc-time-header-width);
+  margin-top: var(--vc-time-header-margin-top);
+  padding: var(--vc-time-header-padding);
   line-height: 21px;
 }
 
 .vc-time-select-group {
   display: inline-flex;
   align-items: center;
-  padding: 0 4px;
+  margin: var(--vc-time-select-group-margin);
+  padding: var(--vc-time-select-group-padding);
   background: var(--vc-time-select-group-bg);
-  border-radius: var(--vc-rounded-md);
-  border: 1px solid var(--vc-time-select-group-border);
+  border-radius: var(--vc-time-select-group-border-radius);
+  border: var(--vc-time-select-group-border-width)
+    var(--vc-time-select-group-border-style) var(--vc-time-select-group-border);
   .vc-base-icon {
-    margin-right: 4px;
+    display: var(--vc-time-select-group-icon-display);
+    margin: var(--vc-time-select-group-icon-margin);
     color: var(--vc-time-select-group-icon-color);
   }
   select {
-    background: transparent;
-    padding: 0px 4px;
+    background: var(--vc-time-select-bg);
+    padding: var(--vc-time-select-padding);
   }
 }
 

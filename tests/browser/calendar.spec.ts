@@ -20,6 +20,38 @@ test('supports pointer and keyboard date selection', async ({ page }) => {
   await expect(page.locator('#selected-date')).toHaveText('2024-01-16');
 });
 
+test('applies layout custom properties without selector overrides', async ({
+  page,
+}) => {
+  const calendar = page.locator('#variable-calendar');
+
+  await expect(calendar.locator('.vc-day-content').first()).toHaveCSS(
+    'width',
+    '31px',
+  );
+  await expect(calendar.locator('.vc-header').first()).toHaveCSS(
+    'margin-top',
+    '0px',
+  );
+  await expect(calendar.locator('.vc-pane').first()).toHaveCSS(
+    'min-width',
+    '220px',
+  );
+  await expect(calendar.locator('.vc-time-picker')).toHaveCSS(
+    'flex-direction',
+    'row',
+  );
+  await expect(
+    calendar.locator('.vc-time-select-group .vc-base-icon'),
+  ).toHaveCSS('display', 'none');
+  await expect(
+    calendar.locator('.vc-time-select-group select').first(),
+  ).toHaveCSS('background-color', 'rgb(1, 2, 3)');
+  await expect(
+    calendar.locator('.vc-time-select-group select').first(),
+  ).toHaveCSS('width', '22px');
+});
+
 test('supports a real touch tap in WebKit', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'webkit-touch');
   const day = page.locator(
