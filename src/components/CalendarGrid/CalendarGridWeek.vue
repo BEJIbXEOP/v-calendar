@@ -1,6 +1,6 @@
 <template>
   <div class="vc-grid-week-cells" :style="weekCellsStyle">
-    <template v-for="cell in cells" :key="cell.key">
+    <template v-for="cell in cells" :key="cell.data.key">
       <CalendarWeekCell
         :cell="cell"
         :min-day-index="minDayIndex"
@@ -31,7 +31,9 @@ const props = defineProps<{
 const { isMonthly, eventsContext } = useCalendarGrid();
 
 const minDayIndex = computed(() => props.days[0]?.dayIndex ?? 0);
-const maxDayIndex = computed(() => props.days[props.days.length - 1]?.dayIndex ?? 0);
+const maxDayIndex = computed(
+  () => props.days[props.days.length - 1]?.dayIndex ?? 0,
+);
 
 const cells = computed(() => {
   const result: Array<DateRangeCell<Event>> = [];

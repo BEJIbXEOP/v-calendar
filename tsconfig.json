@@ -5,7 +5,7 @@
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -13,10 +13,7 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "resize-observer-browser",
-      "vitest/globals"
-    ],
+    "types": ["node", "vitest/globals"],
     "paths": {
       "@/*": [
         "src/*"
@@ -26,8 +23,7 @@
       "esnext",
       "dom",
       "dom.iterable",
-      "scripthost",
-      "esnext.intl"
+    "esnext.intl"
     ],
   },
   "include": [

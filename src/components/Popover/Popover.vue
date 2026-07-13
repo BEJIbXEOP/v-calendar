@@ -82,7 +82,10 @@ export default defineComponent({
     let timeout: number | undefined = undefined;
     const popoverRef = ref<HTMLElement>();
     let resizeObserver: ResizeObserver | null = null;
+    let triggerObserver: MutationObserver | null = null;
     let popper: Instance | null = null;
+    let ownerDocument: Document | null = null;
+    let isUnmounted = false;
 
     const state: PopoverState = reactive({
       isVisible: false,
@@ -164,6 +167,8 @@ export default defineComponent({
     });
 
     function destroyPopper() {
+      triggerObserver?.disconnect();
+      triggerObserver = null;
       if (popper) {
         popper.destroy();
         popper = null;
@@ -172,6 +177,7 @@ export default defineComponent({
 
     function setupPopper() {
       nextTick(() => {
+        if (isUnmounted) return;
         const el = resolveEl(state.target);
         if (!el || !popoverRef.value) return;
         if (popper && popper.state.elements.reference !== el) {
@@ -185,6 +191,20 @@ export default defineComponent({
           );
         } else {
           popper.update();
+        }
+        const targetDocument = el.ownerDocument;
+        const Observer = targetDocument?.defaultView?.MutationObserver;
+        if (Observer && targetDocument && el.isConnected && !triggerObserver) {
+          triggerObserver = new Observer(() => {
+            if (el.isConnected) return;
+            state.force = false;
+            state.isVisible = false;
+            destroyPopper();
+          });
+          triggerObserver.observe(targetDocument.documentElement, {
+            childList: true,
+            subtree: true,
+          });
         }
       });
     }
@@ -213,6 +233,8 @@ export default defineComponent({
       if (opts.force) state.force = true;
 
       setTimer(opts.showDelay ?? props.showDelay, () => {
+        const target = resolveEl(opts.target ?? state.target);
+        if (!target) return;
         if (state.isVisible) {
           state.force = false;
         }
@@ -225,8 +247,8 @@ export default defineComponent({
     }
 
     function hide(opts: Partial<PopoverOptions> = {}) {
-      if (!popper) return;
-      if (opts.target && !isCurrentTarget(opts.target)) return;
+      if (opts.target && popper && !isCurrentTarget(opts.target)) return;
+      if (!popper && !state.isVisible) return;
 
       if (state.force) return;
       if (opts.force) state.force = true;
@@ -248,15 +270,15 @@ export default defineComponent({
 
     function onDocumentClick(e: CustomEvent) {
       if (!popper) return;
-      const popperRef = popper.state.elements.reference;
-      if (!popoverRef.value || !popperRef) {
+      const reference = popper.state.elements.reference;
+      if (!popoverRef.value || !reference) {
         return;
       }
       // Don't hide if target element is contained within popover ref or content
       const target = e.target as Node;
       if (
         elementContains(popoverRef.value, target) ||
-        elementContains(popperRef as Node, target)
+        elementContains(reference as Node, target)
       ) {
         return;
       }
@@ -285,20 +307,20 @@ export default defineComponent({
       toggle(detail);
     }
 
-    function addEvents() {
-      on(document, 'keydown', onDocumentKeydown);
-      on(document, 'click', onDocumentClick);
-      on(document, 'show-popover', onDocumentShowPopover);
-      on(document, 'hide-popover', onDocumentHidePopover);
-      on(document, 'toggle-popover', onDocumentTogglePopover);
+    function addEvents(doc: Document) {
+      on(doc, 'keydown', onDocumentKeydown);
+      on(doc, 'pointerdown', onDocumentClick);
+      on(doc, 'show-popover', onDocumentShowPopover);
+      on(doc, 'hide-popover', onDocumentHidePopover);
+      on(doc, 'toggle-popover', onDocumentTogglePopover);
     }
 
-    function removeEvents() {
-      off(document, 'keydown', onDocumentKeydown);
-      off(document, 'click', onDocumentClick);
-      off(document, 'show-popover', onDocumentShowPopover);
-      off(document, 'hide-popover', onDocumentHidePopover);
-      off(document, 'toggle-popover', onDocumentTogglePopover);
+    function removeEvents(doc: Document) {
+      off(doc, 'keydown', onDocumentKeydown);
+      off(doc, 'pointerdown', onDocumentClick);
+      off(doc, 'show-popover', onDocumentShowPopover);
+      off(doc, 'hide-popover', onDocumentHidePopover);
+      off(doc, 'toggle-popover', onDocumentTogglePopover);
     }
 
     function beforeEnter(el: Element) {
@@ -341,7 +363,7 @@ export default defineComponent({
       if (
         state.autoHide &&
         !state.isFocused &&
-        (!popperRef || popperRef !== document.activeElement) &&
+        (!popperRef || popperRef !== ownerDocument?.activeElement) &&
         ['hover', 'hover-focus'].includes(state.visibility)
       ) {
         hide();
@@ -381,7 +403,9 @@ export default defineComponent({
       val => {
         cleanupRO();
         if (!val) return;
-        resizeObserver = new ResizeObserver(() => {
+        const Observer = val.ownerDocument.defaultView?.ResizeObserver;
+        if (!Observer) return;
+        resizeObserver = new Observer(() => {
           if (popper) popper.update();
         });
         resizeObserver.observe(val);
@@ -393,13 +417,17 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      addEvents();
+      ownerDocument = popoverRef.value?.ownerDocument ?? null;
+      if (ownerDocument) addEvents(ownerDocument);
     });
 
     onUnmounted(() => {
+      isUnmounted = true;
+      clearTimeout(timeout);
       destroyPopper();
       cleanupRO();
-      removeEvents();
+      if (ownerDocument) removeEvents(ownerDocument);
+      ownerDocument = null;
     });
 
     return {

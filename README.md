@@ -1,4 +1,4 @@
-# VCalendar Plugin for Vue 3
+# VCalendar Plugin for Vue 3.5.16+
 
 A calendar and date picker plugin for [Vue.js](https://vuejs.org).
 
@@ -9,13 +9,13 @@ A calendar and date picker plugin for [Vue.js](https://vuejs.org).
 ### NPM
 
 ```shell
-npm install v-calendar@next @popperjs/core
+npm install v-calendar-3 @popperjs/core
 ```
 
 ### Yarn
 
 ```shell
-yarn add v-calendar@next @popperjs/core
+yarn add v-calendar-3 @popperjs/core
 ```
 
 ## Use Plugin
@@ -23,14 +23,14 @@ yarn add v-calendar@next @popperjs/core
 :warning: **As of `v3.0.0-alpha.7`, all installation methods require manual import of component styles. This is due to Vite build restrictions in libary mode.**
 
 ```js
-import 'v-calendar/style.css';
+import 'v-calendar-3/style.css';
 ```
 
 ### Method 1: Use Globally
 
 ```js
-import VCalendar from 'v-calendar';
-import 'v-calendar/style.css';
+import VCalendar from 'v-calendar-3';
+import 'v-calendar-3/style.css';
 
 // Use plugin with optional defaults
 app.use(VCalendar, {})
@@ -48,8 +48,8 @@ app.use(VCalendar, {})
 
 ```js
 // main.js
-import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
+import { setupCalendar, Calendar, DatePicker } from 'v-calendar-3';
+import 'v-calendar-3/style.css';
 
 // Use plugin defaults (optional)
 app.use(setupCalendar, {})
@@ -71,7 +71,7 @@ app.component('VDatePicker', DatePicker)
 
 ```js
 // main.js
-import { setupCalendar } from 'v-calendar';
+import { setupCalendar } from 'v-calendar-3';
 
 // Use calendar defaults (optional)
 app.use(setupCalendar, {})
@@ -85,8 +85,8 @@ app.use(setupCalendar, {})
 </template>
 
 <script>
-import { Calendar, DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
+import { Calendar, DatePicker } from 'v-calendar-3';
+import 'v-calendar-3/style.css';
 
 export default {
   components: {
@@ -109,7 +109,7 @@ Please follow below mentioned steps to clone and build this project:
 ### Clone the repo
 
 ```sh
-git clone https://github.com/nathanreyes/v-calendar
+git clone https://github.com/BEJIbXEOP/v-calendar
 
 # Move to directory
 cd v-calendar

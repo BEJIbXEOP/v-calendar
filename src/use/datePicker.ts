@@ -6,6 +6,7 @@ import {
   computed,
   watch,
   onMounted,
+  onUnmounted,
   nextTick,
   toRef,
   inject,
@@ -149,7 +150,7 @@ export function createDatePicker(
   const popoverRef = ref<InstanceType<typeof Popover> | null>(null);
   const calendarRef = ref<InstanceType<typeof Calendar> | null>(null);
 
-  let updateTimeout: undefined | number = undefined;
+  let updateTimeout: ReturnType<typeof setTimeout> | undefined;
   let dragTrackingValue: null | SimpleDateRange;
   let watchValue = true;
 
@@ -303,7 +304,7 @@ export function createDatePicker(
 
   const rules = computed(() => {
     return normalizeConfig(
-      props.rules === 'auto' ? getAutoRules() : props.rules ?? {},
+      props.rules === 'auto' ? getAutoRules() : (props.rules ?? {}),
     );
   });
 
@@ -457,7 +458,7 @@ export function createDatePicker(
     return new Promise(resolve => {
       const { debounce = 0, ...args } = opts;
       if (debounce > 0) {
-        updateTimeout = window.setTimeout(() => {
+        updateTimeout = setTimeout(() => {
           resolve(forceUpdateValue(value, args));
         }, debounce);
       } else {
@@ -848,6 +849,11 @@ export function createDatePicker(
       formatInput: true,
       hidePopover: false,
     });
+  });
+
+  onUnmounted(() => {
+    clearTimeout(updateTimeout);
+    hidePopover({ hideDelay: 0 });
   });
 
   // Created

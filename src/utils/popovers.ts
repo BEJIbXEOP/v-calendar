@@ -1,6 +1,6 @@
 import type { Placement } from '@popperjs/core';
 import type { ComponentPublicInstance, Directive, DirectiveBinding } from 'vue';
-import { elementContains, on, resolveEl } from './helpers';
+import { elementContains, on, resolveDocument, resolveEl } from './helpers';
 
 export type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';
 
@@ -47,34 +47,30 @@ export interface PopoverEventHandlers {
   focusout: (e: MouseEvent) => void;
 }
 
+function dispatchPopoverEvent(
+  name: 'show-popover' | 'hide-popover' | 'toggle-popover',
+  opts: Partial<PopoverOptions>,
+) {
+  const ownerDocument = resolveDocument(opts.target);
+  const CustomEventConstructor = ownerDocument?.defaultView?.CustomEvent;
+  if (!ownerDocument || !CustomEventConstructor) return;
+  ownerDocument.dispatchEvent(
+    new CustomEventConstructor(name, {
+      detail: opts,
+    }),
+  );
+}
+
 export function showPopover(opts: Partial<PopoverOptions>) {
-  if (document) {
-    document.dispatchEvent(
-      new CustomEvent('show-popover', {
-        detail: opts,
-      }),
-    );
-  }
+  dispatchPopoverEvent('show-popover', opts);
 }
 
 export function hidePopover(opts: Partial<PopoverOptions>) {
-  if (document) {
-    document.dispatchEvent(
-      new CustomEvent('hide-popover', {
-        detail: opts,
-      }),
-    );
-  }
+  dispatchPopoverEvent('hide-popover', opts);
 }
 
 export function togglePopover(opts: Partial<PopoverOptions>) {
-  if (document) {
-    document.dispatchEvent(
-      new CustomEvent('toggle-popover', {
-        detail: opts,
-      }),
-    );
-  }
+  dispatchPopoverEvent('toggle-popover', opts);
 }
 
 export function getPopoverEventHandlers(
@@ -109,11 +105,14 @@ export function getPopoverEventHandlers(
       }
     }
   };
-  const mouseLeaveHandler = () => {
+  const mouseLeaveHandler = (e: MouseEvent) => {
     if (hovered) {
       hovered = false;
       if (hover || (hoverFocus && !focused)) {
-        hidePopover(opts);
+        hidePopover({
+          ...opts,
+          target: opts.target || (e.currentTarget as HTMLElement),
+        });
       }
     }
   };
@@ -135,7 +134,10 @@ export function getPopoverEventHandlers(
     ) {
       focused = false;
       if (focus || (hoverFocus && !hovered)) {
-        hidePopover(opts);
+        hidePopover({
+          ...opts,
+          target: opts.target || (e.currentTarget as HTMLElement),
+        });
       }
     }
   };
@@ -199,14 +201,16 @@ export const popoverDirective: Directive = {
     if (oldVisibility !== newVisibility) {
       if (oldVisibility) {
         removeHandlers(el);
-        if (!newVisibility) hidePopover(oldValue);
+        if (!newVisibility) hidePopover({ ...oldValue, target: el });
       }
       if (newVisibility) {
         addHandlers(el, value);
       }
     }
   },
-  unmounted(el: Element) {
+  unmounted(el: Element, binding: DirectiveBinding<PopoverOptions>) {
+    const { value } = binding;
     removeHandlers(el);
+    hidePopover({ ...value, target: el, hideDelay: 0, force: true });
   },
 };

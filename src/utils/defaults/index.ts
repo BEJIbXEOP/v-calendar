@@ -1,5 +1,5 @@
 import { type App, computed, reactive } from 'vue';
-import type { DarkModeConfig } from 'vue-screen-utils';
+import type { DarkModeConfig } from '../useDisplayMode';
 import { defaultsDeep, get, has, mapValues } from '../helpers';
 import locales from './locales';
 import masks from './masks.json';

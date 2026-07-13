@@ -56,8 +56,12 @@ export class DateRange {
         config.end = source;
       }
     }
-    if (config.start != null) config.start = new Date(config.start);
-    if (config.end != null) config.end = new Date(config.end);
+    if (config.start != null) {
+      config.start = locale.toDateOrNull(config.start);
+    }
+    if (config.end != null) {
+      config.end = locale.toDateOrNull(config.end);
+    }
     return new DateRange(config, locale);
   }
 
@@ -181,7 +185,7 @@ export class DateRangeContext {
 
   render(data: RangeData, range: DateRange, days: DayParts[]) {
     let result = null;
-    const startDayIndex = days[0]?.dayIndex?? 0;
+    const startDayIndex = days[0]?.dayIndex ?? 0;
     const endDayIndex = days[days.length - 1]?.dayIndex ?? 0;
     if (range.hasRepeat) {
       days.forEach(day => {

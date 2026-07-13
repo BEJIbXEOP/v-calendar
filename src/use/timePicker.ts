@@ -59,14 +59,12 @@ export function createTimePicker(props: TimePickerProps) {
 
   function updateParts(newParts: Partial<DateParts>) {
     newParts = Object.assign(parts.value, newParts);
-    let newValue = null;
-    if (isRange.value) {
-      const start = isStart.value ? newParts : dateParts.value[0];
-      const end = isStart.value ? dateParts.value[1] : newParts;
-      newValue = { start, end };
-    } else {
-      newValue = newParts;
-    }
+    const newValue = isRange.value
+      ? {
+          start: isStart.value ? newParts : dateParts.value[0],
+          end: isStart.value ? dateParts.value[1] : newParts,
+        }
+      : newParts;
     updateDpValue(newValue, {
       patch: 'time',
       targetPriority: isStart.value ? 'start' : 'end',

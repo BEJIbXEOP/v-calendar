@@ -23,12 +23,12 @@ export const getType = (value: any) =>
   Object.prototype.toString.call(value).slice(8, -1);
 export const isDate = (value: unknown): value is Date =>
   _isDate(value) && !isNaN(value.getTime());
-export const isObject = (value: unknown): value is Object =>
+export const isObject = (value: unknown): value is object =>
   getType(value) === 'Object';
 
 // Object utils
 const hasObj: any = _has;
-export { hasObj as has }
+export { hasObj as has };
 export const hasAny = (obj: object, props: string[]) =>
   _some(props, p => _has(obj, p));
 
@@ -55,8 +55,23 @@ export const arrayHasItems = (array: any): boolean =>
 
 export const resolveEl = (target: unknown): Node | null => {
   if (target == null) return null;
-  if (document && isString(target)) return document.querySelector(target);
+  if (isString(target)) {
+    return typeof document === 'undefined'
+      ? null
+      : document.querySelector(target);
+  }
   return (target as ComponentPublicInstance).$el ?? target;
+};
+
+export const resolveDocument = (target?: unknown): Document | null => {
+  if ((target as Document | undefined)?.nodeType === 9) {
+    return target as Document;
+  }
+  const element = resolveEl(target);
+  return (
+    element?.ownerDocument ??
+    (typeof document === 'undefined' ? null : document)
+  );
 };
 
 export interface ElementPosition {
@@ -153,19 +168,14 @@ export function clamp(num: number, min: number, max: number) {
   return Math.min(Math.max(num, min), max);
 }
 
-/* eslint-disable no-bitwise */
-
 export function hash(str: string): number {
   let hashcode = 0;
-  let i = 0;
   let chr;
   if (str.length === 0) return hashcode;
-  for (i = 0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     chr = str.charCodeAt(i);
     hashcode = (hashcode << 5) - hashcode + chr;
     hashcode |= 0; // Convert to 32bit integer
   }
   return hashcode;
 }
-
-/* eslint-enable no-bitwise */

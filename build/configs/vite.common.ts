@@ -27,6 +27,7 @@ export const readDirRecursive = (path: string): string[] => {
 const rollupOptions: RollupOptions = {
   external: ['vue', '@popperjs/core'],
   output: {
+    exports: 'named',
     // Provide global variables to use in the UMD build
     // for externalized deps
     globals: {
@@ -39,7 +40,6 @@ const rollupOptions: RollupOptions = {
 const rollupMjsBuildOptions: RollupOptions = {
   input: path.resolve(process.cwd(), 'src/index.ts'),
   output: {
-    sourcemap: true,
     dir: 'dist/mjs',
     format: 'esm',
     entryFileNames: '[name].mjs',
@@ -62,6 +62,7 @@ export function createViteConfig(format: BuildFormat): InlineConfig {
       sourcemap: true,
       lib: {
         entry: path.resolve(process.cwd(), 'src/index.ts'),
+        cssFileName: 'style',
         fileName: () => 'index.js',
         formats: [isNode ? 'es' : format],
         // Only for iife/umd
@@ -94,7 +95,7 @@ export function createViteConfig(format: BuildFormat): InlineConfig {
   if (isEs) {
     config.plugins!.push(
       visualizer({
-        filename: 'dist/stats.html',
+        filename: 'build/stats.html',
         title: 'V-Calendar Visualizer',
       }),
     );

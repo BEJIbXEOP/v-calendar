@@ -21,10 +21,7 @@ import type { CalendarDay } from '../utils/page';
 import { propsDef as basePropsDef, createCalendar, emitsDef } from './calendar';
 
 type GridState =
-  | 'NORMAL'
-  | 'CREATE_MONITOR'
-  | 'DRAG_MONITOR'
-  | 'RESIZE_MONITOR';
+  'NORMAL' | 'CREATE_MONITOR' | 'DRAG_MONITOR' | 'RESIZE_MONITOR';
 
 export type GridStateEvent =
   | 'GRID_CURSOR_DOWN'
@@ -100,47 +97,47 @@ type MessageType =
   | 'event-remove';
 
 class Messages {
-  static _emit: Function;
+  constructor(private emit: Function) {}
 
-  static EventCreateBegin(event: Event) {
-    return new CancellableEventMessage(this._emit, 'event-create-begin', event);
+  EventCreateBegin(event: Event) {
+    return new CancellableEventMessage(this.emit, 'event-create-begin', event);
   }
 
-  static EventCreateEnd(event: Event) {
-    return new EventMessage(this._emit, 'event-create-end', event);
+  EventCreateEnd(event: Event) {
+    return new EventMessage(this.emit, 'event-create-end', event);
   }
 
-  static EventResizeBegin(event: Event) {
-    return new CancellableEventMessage(this._emit, 'event-resize-begin', event);
+  EventResizeBegin(event: Event) {
+    return new CancellableEventMessage(this.emit, 'event-resize-begin', event);
   }
 
-  static EventResizeUpdate(event: Event, offset: ResizeOffset) {
+  EventResizeUpdate(event: Event, offset: ResizeOffset) {
     return new EventResizeMessage(
-      this._emit,
+      this.emit,
       'event-resize-update',
       event,
       offset,
     );
   }
 
-  static EventResizeEnd(event: Event) {
-    return new EventMessage(this._emit, 'event-resize-end', event);
+  EventResizeEnd(event: Event) {
+    return new EventMessage(this.emit, 'event-resize-end', event);
   }
 
-  static EventMoveBegin(event: Event) {
-    return new CancellableEventMessage(this._emit, 'event-move-begin', event);
+  EventMoveBegin(event: Event) {
+    return new CancellableEventMessage(this.emit, 'event-move-begin', event);
   }
 
-  static EventMoveUpdate(event: Event, offset: DragOffset) {
-    return new EventMoveMessage(this._emit, 'event-move-update', event, offset);
+  EventMoveUpdate(event: Event, offset: DragOffset) {
+    return new EventMoveMessage(this.emit, 'event-move-update', event, offset);
   }
 
-  static EventMoveEnd(event: Event) {
-    return new EventMessage(this._emit, 'event-move-end', event);
+  EventMoveEnd(event: Event) {
+    return new EventMessage(this.emit, 'event-move-end', event);
   }
 
-  static EventRemove(event: Event) {
-    return new CancellableEventMessage(this._emit, 'event-remove', event);
+  EventRemove(event: Event) {
+    return new CancellableEventMessage(this.emit, 'event-remove', event);
   }
 }
 
@@ -250,7 +247,7 @@ export function createCalendarGrid(
   const dailyGridRef = ref<IBoundingRect | null>(null);
   const weeklyGridRef = ref<IBoundingRect | null>(null);
   const activeGridRef = ref<IBoundingRect | null>(null);
-  Messages._emit = emit;
+  const messages = new Messages(emit);
 
   const { view, isDaily, isMonthly, pages, locale, move, onDayFocusin } =
     calendar;
@@ -376,14 +373,14 @@ export function createCalendarGrid(
       },
       getEventContext(),
     );
-    const msg = Messages.EventCreateBegin(event).send();
+    const msg = messages.EventCreateBegin(event).send();
     if (msg.cancel || !msg.event) return;
     eventsMap.value[event.key] = event;
     return event;
   }
 
   function removeEvent(event: Event) {
-    const msg = Messages.EventRemove(event).send();
+    const msg = messages.EventRemove(event).send();
     if (msg.cancel) return;
     delete eventsMap.value[event.key];
 
@@ -391,10 +388,13 @@ export function createCalendarGrid(
   }
 
   function getEventsFromProps() {
-    return props.events.reduce((map, config) => {
-      map[config.key] = map[config.key] || createEventFromExisting(config);
-      return map;
-    }, {} as Record<keyof any, Event>);
+    return props.events.reduce(
+      (map, config) => {
+        map[config.key] = map[config.key] || createEventFromExisting(config);
+        return map;
+      },
+      {} as Record<keyof any, Event>,
+    );
   }
 
   function getMsFromPosition(position: number) {
@@ -497,7 +497,7 @@ export function createCalendarGrid(
       ms,
     };
     forSelectedEvents(event => {
-      const msg = Messages.EventResizeBegin(event).send();
+      const msg = messages.EventResizeBegin(event).send();
       if (msg.cancel) return;
       event.startResize(day, isStart);
     });
@@ -513,7 +513,7 @@ export function createCalendarGrid(
       offset.ms = getMsFromPosition(position) - resizeOrigin.ms;
     }
     forSelectedEvents(event => {
-      const msg = Messages.EventResizeUpdate(event, offset).send();
+      const msg = messages.EventResizeUpdate(event, offset).send();
       if (msg.cancel) return;
       event.updateResize(offset);
     });
@@ -522,9 +522,9 @@ export function createCalendarGrid(
   function stopResizingEvents() {
     if (!resizing.value || !resizeOrigin) return;
     forSelectedEvents(event => {
-      Messages.EventResizeEnd(event);
+      messages.EventResizeEnd(event);
       if (resizeOrigin!.isNew && event === resizeOrigin!.event) {
-        Messages.EventCreateEnd(event).send();
+        messages.EventCreateEnd(event).send();
         showCellPopover(event);
       }
       event.stopResize();
@@ -557,7 +557,7 @@ export function createCalendarGrid(
       ms,
     };
     selectedEvents.value.forEach(event => {
-      const msg = Messages.EventMoveBegin(event).send();
+      const msg = messages.EventMoveBegin(event).send();
       if (msg.cancel) return;
       event.startDrag(day);
     });
@@ -571,7 +571,7 @@ export function createCalendarGrid(
       ms: getMsFromPosition(position) - dragOrigin.ms,
     };
     forSelectedEvents(event => {
-      const msg = Messages.EventMoveUpdate(event, offset).send();
+      const msg = messages.EventMoveUpdate(event, offset).send();
       if (msg.cancel) return;
       event.updateDrag(offset);
     });
@@ -582,7 +582,7 @@ export function createCalendarGrid(
     dragging.value = false;
     dragOrigin = null;
     forSelectedEvents(event => {
-      Messages.EventMoveEnd(event).send();
+      messages.EventMoveEnd(event).send();
       event.stopDrag();
     });
   }
@@ -690,7 +690,7 @@ export function createCalendarGrid(
           const evt = createNewEvent(date, isWeekly);
           if (evt) {
             evt.selected = true;
-            Messages.EventCreateEnd(evt).send();
+            messages.EventCreateEnd(evt).send();
             showCellPopover(evt);
           }
         }

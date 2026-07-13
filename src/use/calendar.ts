@@ -45,7 +45,7 @@ import {
 } from '../utils/page';
 import { type PopoverVisibility, hidePopover } from '../utils/popovers';
 import { addHorizontalSwipeHandler } from '../utils/touch';
-import { handleWatcher, skipWatcher } from '../utils/watchers';
+import { createWatcherController } from '../utils/watchers';
 import { propsDef as basePropsDef, useOrCreateBase } from './base';
 import { provideSlots } from './slots';
 
@@ -161,6 +161,7 @@ export function createCalendar(
   // Non-reactive util vars
   let transitionPromise: any = null;
   let removeHandlers: any = null;
+  const { handleWatcher, skipWatcher } = createWatcherController();
 
   provideSlots(slots);
 
@@ -172,6 +173,8 @@ export function createCalendar(
     masks,
     minDate,
     maxDate,
+    normalizedMinDate,
+    normalizedMaxDate,
     disabledAttribute,
     disabledDates,
   } = useOrCreateBase(props);
@@ -188,12 +191,18 @@ export function createCalendar(
 
   const minPage = computed(
     () =>
-      props.minPage || (minDate.value ? getDateAddress(minDate.value) : null),
+      props.minPage ||
+      (normalizedMinDate.value
+        ? getDateAddress(normalizedMinDate.value)
+        : null),
   );
 
   const maxPage = computed(
     () =>
-      props.maxPage || (maxDate.value ? getDateAddress(maxDate.value) : null),
+      props.maxPage ||
+      (normalizedMaxDate.value
+        ? getDateAddress(normalizedMaxDate.value)
+        : null),
   );
 
   const navVisibility = computed(() => props.navVisibility);
@@ -478,7 +487,11 @@ export function createCalendar(
     // Move to new `fromPage` if it's different from the current one
     if (opts.fromPage && !pageIsEqualToPage(opts.fromPage, firstPage.value)) {
       // Hide nav popover for good measure
-      hidePopover({ id: navPopoverId.value, hideDelay: 0 });
+      hidePopover({
+        id: navPopoverId.value,
+        target: containerRef.value,
+        hideDelay: 0,
+      });
       // Quietly change view if needed
       if (opts.view) {
         skipWatcher('view', 10);

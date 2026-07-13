@@ -14,11 +14,11 @@ title: 'Installation'
 ::: code-group
 
 ```shell [npm]
-npm install v-calendar@next @popperjs/core
+npm install v-calendar-3 @popperjs/core
 ```
 
 ```shell [yarn]
-yarn add v-calendar@next @popperjs/core
+yarn add v-calendar-3 @popperjs/core
 ```
 
 :::
@@ -31,7 +31,7 @@ yarn add v-calendar@next @popperjs/core
 </BaseAlert>
 
 ```js
-import 'v-calendar/style.css';
+import 'v-calendar-3/style.css';
 ```
 
 ### Method 1: Use Globally
@@ -39,8 +39,8 @@ import 'v-calendar/style.css';
 ::: code-group
 
 ```js [main.js]
-import VCalendar from 'v-calendar';
-import 'v-calendar/style.css';
+import VCalendar from 'v-calendar-3';
+import 'v-calendar-3/style.css';
 
 // Use plugin with optional defaults
 app.use(VCalendar, {})
@@ -60,8 +60,8 @@ app.use(VCalendar, {})
 ::: code-group
 
 ```js [main.js]
-import { setupCalendar, Calendar, DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
+import { setupCalendar, Calendar, DatePicker } from 'v-calendar-3';
+import 'v-calendar-3/style.css';
 
 // Use plugin defaults (optional)
 app.use(setupCalendar, {})
@@ -85,7 +85,7 @@ app.component('VDatePicker', DatePicker)
 ::: code-group
 
 ```js [main.js]
-import { setupCalendar } from 'v-calendar';
+import { setupCalendar } from 'v-calendar-3';
 
 // Use calendar defaults (optional)
 app.use(setupCalendar, {})
@@ -98,8 +98,8 @@ app.use(setupCalendar, {})
 </template>
 
 <script>
-import { Calendar, DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
+import { Calendar, DatePicker } from 'v-calendar-3';
+import 'v-calendar-3/style.css';
 
 export default {
   components: {
@@ -141,7 +141,7 @@ As referenced above, custom defaults can be provided when using the plugin, but 
     <!-- Vue  -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- VCalendar (automatically installed) -->
-    <script src="https://unpkg.com/v-calendar"></script>
+    <script src="https://unpkg.com/v-calendar-3"></script>
 
     <script>
       const { createApp } = Vue

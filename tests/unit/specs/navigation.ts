@@ -73,7 +73,7 @@ export function testNavigationProps(mountFn: ComponentMount) {
     expect(wrapper.find('.vc-day.id-2000-01-01').exists()).toBe(true);
   });
 
-  for (let test of disabledTests) {
+  for (const test of disabledTests) {
     it(test.it, async () => {
       // Set props
       const wrapper = mountFn({ props: test.props });

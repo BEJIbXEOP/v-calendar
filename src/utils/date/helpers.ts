@@ -8,13 +8,15 @@ import {
   isFunction,
   isObject,
 } from '../helpers';
-import { toDate } from 'date-fns-tz';
-import getWeeksInMonth from 'date-fns/getWeeksInMonth';
-import getWeek from 'date-fns/getWeek';
-import getISOWeek from 'date-fns/getISOWeek';
-import addDays from 'date-fns/addDays';
-import addMonths from 'date-fns/addMonths';
-import addYears from 'date-fns/addYears';
+import {
+  addDays,
+  addMonths,
+  addYears,
+  getISOWeek,
+  getWeek,
+  getWeeksInMonth,
+} from 'date-fns';
+import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { type LocaleConfig, default as Locale } from '../locale';
 
 export { addDays, addMonths, addYears };
@@ -145,10 +147,7 @@ interface NumberRuleConfig {
 type DatePartsRuleFunction = (part: number, parts: TimeParts) => boolean;
 
 type DatePartsRule =
-  | number
-  | Array<number>
-  | NumberRuleConfig
-  | DatePartsRuleFunction;
+  number | Array<number> | NumberRuleConfig | DatePartsRuleFunction;
 
 export interface DatePartsRules {
   hours?: DatePartsRule;
@@ -397,7 +396,6 @@ const threeDigits = /\d{3}/;
 const fourDigits = /\d{4}/;
 const word =
   /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 const monthUpdate = (arrName: string) => (d: DateParts, v: string, l: any) => {
   const index = l[arrName].indexOf(
@@ -599,11 +597,8 @@ export function getDateFromParts(
   } = parts;
 
   if (timezone) {
-    const dateString = `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}T${pad(
-      hrs,
-      2,
-    )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-    return toDate(dateString, { timeZone: timezone });
+    const localDate = new Date(year, month - 1, day, hrs, min, sec, ms);
+    return fromZonedTime(localDate, timezone);
   }
   return new Date(year, month - 1, day, hrs, min, sec, ms);
 }
@@ -624,25 +619,21 @@ export function getTimezoneOffset(
   let date;
   const utcDate = new Date(Date.UTC(y, m - 1, d, hrs, min, sec, ms));
   if (timezone) {
-    const dateString = `${pad(y, 4)}-${pad(m, 2)}-${pad(d, 2)}T${pad(
-      hrs,
-      2,
-    )}:${pad(min, 2)}:${pad(sec, 2)}.${pad(ms, 3)}`;
-    date = toDate(dateString, { timeZone: timezone });
+    date = fromZonedTime(new Date(y, m - 1, d, hrs, min, sec, ms), timezone);
   } else {
     date = new Date(y, m - 1, d, hrs, min, sec, ms);
   }
   return (date.getTime() - utcDate.getTime()) / 60000;
 }
 
-export function getDateParts(date: Date, locale: Locale): DateParts {
-  let tzDate = new Date(date.getTime());
-  if (locale.timezone) {
-    tzDate = new Date(
-      date.toLocaleString('en-US', { timeZone: locale.timezone }),
-    );
-    tzDate.setMilliseconds(date.getMilliseconds());
-  }
+export function getDateParts(
+  date: Date,
+  locale: Locale,
+  timezone = locale.timezone,
+): DateParts {
+  const tzDate = timezone
+    ? toZonedTime(date, timezone)
+    : new Date(date.getTime());
   const milliseconds = tzDate.getMilliseconds();
   const seconds = tzDate.getSeconds();
   const minutes = tzDate.getMinutes();
@@ -965,8 +956,61 @@ export function parseDate(
         }
         return date;
       })
-      .find(d => d) || new Date(dateString)
+      .find(d => d) || parseIsoDate(dateString, locale)
   );
+}
+
+function parseIsoDate(dateString: string, locale: Locale): Date {
+  const match =
+    /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-]\d{2}:?\d{2})?)?$/.exec(
+      dateString,
+    );
+  if (!match) return new Date(NaN);
+
+  const [, year, month, day, hours, minutes, seconds, fraction, zone] = match;
+  const parts = {
+    year: Number(year),
+    month: Number(month),
+    day: Number(day),
+    hours: Number(hours ?? 0),
+    minutes: Number(minutes ?? 0),
+    seconds: Number(seconds ?? 0),
+    milliseconds: Number((fraction ?? '').padEnd(3, '0')),
+  };
+
+  const validationDate = new Date(
+    Date.UTC(
+      parts.year,
+      parts.month - 1,
+      parts.day,
+      parts.hours,
+      parts.minutes,
+      parts.seconds,
+      parts.milliseconds,
+    ),
+  );
+  if (
+    validationDate.getUTCFullYear() !== parts.year ||
+    validationDate.getUTCMonth() !== parts.month - 1 ||
+    validationDate.getUTCDate() !== parts.day ||
+    validationDate.getUTCHours() !== parts.hours ||
+    validationDate.getUTCMinutes() !== parts.minutes ||
+    validationDate.getUTCSeconds() !== parts.seconds
+  ) {
+    return new Date(NaN);
+  }
+
+  if (!zone) return locale.getDateFromParts(parts);
+
+  let offsetMinutes = 0;
+  if (zone !== 'Z') {
+    const sign = zone.startsWith('-') ? -1 : 1;
+    const normalized = zone.slice(1).replace(':', '');
+    offsetMinutes =
+      sign *
+      (Number(normalized.slice(0, 2)) * 60 + Number(normalized.slice(2)));
+  }
+  return new Date(validationDate.getTime() - offsetMinutes * MS_PER_MINUTE);
 }
 
 export function formatDate(
@@ -976,15 +1020,14 @@ export function formatDate(
 ) {
   if (date == null) return '';
   let mask = normalizeMasks(masks, locale)[0];
-  // Convert timezone to utc if needed
-  if (/Z$/.test(mask)) locale.timezone = 'utc';
+  const timezone = /Z$/.test(mask) ? 'UTC' : locale.timezone;
   const literals: string[] = [];
   // Make literals inactive by replacing them with ??
   mask = mask.replace(literal, ($0, $1: string) => {
     literals.push($1);
     return '??';
   });
-  const dateParts = locale.getDateParts(date);
+  const dateParts = getDateParts(date, locale, timezone);
   // Apply formatting rules
   mask = mask.replace(token, $0 =>
     $0 in formatFlags

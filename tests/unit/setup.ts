@@ -1,1 +1,7 @@
-global.ResizeObserver = require('resize-observer-polyfill');
+class ResizeObserverMock implements ResizeObserver {
+  disconnect() {}
+  observe() {}
+  unobserve() {}
+}
+
+globalThis.ResizeObserver = ResizeObserverMock;

@@ -254,7 +254,7 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
       minOffsetMs,
       maxOffsetMs,
     } = state.dragOrigin;
-    let { start, end } = state.dragOrigin;
+    let { start } = state.dragOrigin;
     const weeksToAdd = clamp(offset.weeks, minOffsetWeeks, maxOffsetWeeks);
     const weekdaysToAdd = clamp(
       offset.weekdays,
@@ -268,7 +268,7 @@ export function createEvent(config: Partial<EventConfig>, ctx: EventContext) {
       const msToAdd = clamp(offset.ms, minOffsetMs, maxOffsetMs);
       start = roundDate(start.getTime() + msToAdd, snapMs.value);
     }
-    end = new Date(start.getTime() + durationMs);
+    const end = new Date(start.getTime() + durationMs);
     state.range = locale.value.range({ start, end });
   }
 

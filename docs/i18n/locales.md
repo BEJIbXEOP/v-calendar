@@ -75,7 +75,7 @@ More conveniently, you may override or provide missing locale information via th
 
 ```js
 import Vue from 'vue'
-import VCalendar from 'v-calendar'
+import VCalendar from 'v-calendar-3'
 
 Vue.use(VCalendar, {
   locales: {

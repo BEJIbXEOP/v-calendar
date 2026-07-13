@@ -5,13 +5,16 @@ import {
   inject,
   provide,
 } from 'vue';
-import { type DarkModeClassConfig, useDarkMode } from 'vue-screen-utils';
 import { Attribute } from '../utils/attribute';
 import { type DayOfWeek, addDays } from '../utils/date/helpers';
 import { getDefault } from '../utils/defaults';
 import { isObject } from '../utils/helpers';
 import { default as Locale, type LocaleConfig } from '../utils/locale';
 import { Theme } from '../utils/theme';
+import {
+  type DarkModeClassConfig,
+  useDisplayMode,
+} from '../utils/useDisplayMode';
 
 const contextKey = Symbol('__vc_base_context__');
 
@@ -44,7 +47,7 @@ export function createBase(props: BaseProps) {
 
   const color = computed(() => props.color ?? '');
   const isDark = computed(() => props.isDark ?? false);
-  const { displayMode } = useDarkMode(isDark);
+  const { displayMode } = useDisplayMode(isDark);
   const theme = computed(() => new Theme(color.value));
 
   const locale = computed(() => {
@@ -68,20 +71,28 @@ export function createBase(props: BaseProps) {
 
   const minDate = computed(() => props.minDate);
   const maxDate = computed(() => props.maxDate);
+  const normalizedMinDate = computed(() =>
+    minDate.value == null ? null : locale.value.toDateOrNull(minDate.value),
+  );
+  const normalizedMaxDate = computed(() =>
+    maxDate.value == null ? null : locale.value.toDateOrNull(maxDate.value),
+  );
 
   const disabledDates = computed(() => {
     const dates: any[] = props.disabledDates ? [...props.disabledDates] : [];
     // Add disabled range for min date
-    if (minDate.value != null) {
+    const min = normalizedMinDate.value;
+    if (min != null) {
       dates.push({
         start: null,
-        end: addDays(locale.value.toDate(minDate.value), -1),
+        end: addDays(min, -1),
       });
     }
     // Add disabled range for max date
-    if (maxDate.value != null) {
+    const max = normalizedMaxDate.value;
+    if (max != null) {
       dates.push({
-        start: addDays(locale.value.toDate(maxDate.value), 1),
+        start: addDays(max, 1),
         end: null,
       });
     }
@@ -111,6 +122,8 @@ export function createBase(props: BaseProps) {
     masks,
     minDate,
     maxDate,
+    normalizedMinDate,
+    normalizedMaxDate,
     disabledDates,
     disabledAttribute,
   };

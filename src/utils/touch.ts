@@ -24,22 +24,20 @@ export const addHorizontalSwipeHandler = (
   let startY = 0;
   let startTime: number | null = null;
   let isSwiping = false;
-  // Touch start handler
-  function touchStart(e: TouchEvent) {
-    const t = e.changedTouches[0];
-    startX = t.screenX;
-    startY = t.screenY;
-    startTime = new Date().getTime();
+  function pointerStart(event: PointerEvent) {
+    if (!event.isPrimary || event.pointerType === 'mouse') return;
+    startX = event.screenX;
+    startY = event.screenY;
+    startTime = Date.now();
     isSwiping = true;
   }
-  // Touch end handler
-  function touchEnd(e: TouchEvent) {
+
+  function pointerEnd(event: PointerEvent) {
     if (!isSwiping || !startTime) return;
     isSwiping = false;
-    const t = e.changedTouches[0];
-    const deltaX = t.screenX - startX;
-    const deltaY = t.screenY - startY;
-    const deltaTime = new Date().getTime() - startTime;
+    const deltaX = event.screenX - startX;
+    const deltaY = event.screenY - startY;
+    const deltaTime = Date.now() - startTime;
     if (deltaTime < maxSwipeTime) {
       if (
         Math.abs(deltaX) >= minHorizontalSwipeDistance &&
@@ -57,14 +55,18 @@ export const addHorizontalSwipeHandler = (
       }
     }
   }
-  // Add event handlers
-  on(element, 'touchstart', touchStart, { passive: true });
-  // on(element, 'touchmove', touchmove);
-  on(element, 'touchend', touchEnd, { passive: true });
-  // Return function that removes event handlers
+
+  function pointerCancel() {
+    isSwiping = false;
+  }
+
+  on(element, 'pointerdown', pointerStart, { passive: true });
+  on(element, 'pointerup', pointerEnd, { passive: true });
+  on(element, 'pointercancel', pointerCancel, { passive: true });
+
   return () => {
-    off(element, 'touchstart', touchStart);
-    // off(element, 'touchmove', touchmove);
-    off(element, 'touchend', touchEnd);
+    off(element, 'pointerdown', pointerStart);
+    off(element, 'pointerup', pointerEnd);
+    off(element, 'pointercancel', pointerCancel);
   };
 };
