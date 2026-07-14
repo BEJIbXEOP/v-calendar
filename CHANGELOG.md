@@ -1,4 +1,4 @@
-## 1.1.0 (`v-calendar-3`)
+## 1.2.0 (`v-calendar-3`)
 
 ### Breaking Changes
 
@@ -26,11 +26,26 @@
 * Use Pointer Events for swipe and touch interaction and clean up all handlers.
 * Isolate watcher suppression and calendar-grid messages per component instance.
 
+### Features
+
+* Add `popover.teleport`. When enabled, the popover is rendered under the
+  trigger's own document body to escape clipping ancestors without breaking
+  iframe isolation.
+
 ### Tooling
 
 * Upgrade the Vue 3, TypeScript, Vite, Vitest, ESLint, and Playwright toolchain.
 * Add unit and browser regression suites, including desktop and touch WebKit.
 * Generate ESM, CommonJS, CSS, and bundled TypeScript declaration artifacts.
+* Publish Vue global-component declarations for the default `V*` registrations.
+* Validate local and global component autocomplete against the built package.
+* Publish JetBrains Web Types with component props, events, slots, and source
+  locations so PhpStorm can provide completion and declaration navigation.
+
+### TypeScript
+
+* Include inherited Calendar props in the public `DatePicker` component type.
+* Export the public `CalendarProps` and `DatePickerProps` types.
 
 ### Styling
 

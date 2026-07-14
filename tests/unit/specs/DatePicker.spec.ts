@@ -16,6 +16,27 @@ describe('DatePicker', () => {
   describe(':props', async () => {
     testNavigationProps((ctx: any) => mountDp(ctx));
 
+    it(':calendar props - forwards declared calendar props reactively', async () => {
+      const dp = mountDp({
+        props: {
+          rows: 1,
+          trimWeeks: true,
+          initialPage: { year: 2020, month: 8 },
+          transition: 'none',
+        },
+      });
+
+      expect(dp.findAll('.vc-pane')).toHaveLength(1);
+
+      await dp.setProps({ rows: 2 });
+
+      const panes = dp.findAll('.vc-pane');
+      expect(panes).toHaveLength(2);
+      expect(panes.map(pane => pane.findAll('.vc-week').length)).toEqual([
+        6, 6,
+      ]);
+    });
+
     it(':value - does not emit update:modelValue on initial load', () => {
       const dp = mountDp({ props: { modelValue: new Date() } });
       expect(dp.emitted('update:modelValue')).toBeUndefined();

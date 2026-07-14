@@ -1,6 +1,7 @@
 import {
   type SetupContext,
   type ExtractPropTypes,
+  type ExtractPublicPropTypes,
   type PropType,
   ref,
   computed,
@@ -42,7 +43,11 @@ import {
   getPopoverEventHandlers,
 } from '../utils/popovers';
 import { propsDef as basePropsDef, createBase } from './base';
-import type { MoveTarget, MoveOptions } from './calendar';
+import {
+  calendarPropsDef,
+  type MoveOptions,
+  type MoveTarget,
+} from './calendar';
 import { provideSlots } from './slots';
 
 export type DateType = 'date' | 'string' | 'number';
@@ -55,7 +60,7 @@ export interface DateConfig {
 
 const contextKey = Symbol('__vc_date_picker_context__');
 
-export type DateModes = 'date' | 'datetime' | 'time';
+export type DateModes = 'date' | 'dateTime' | 'datetime' | 'time';
 
 export type ValueTarget = 'start' | 'end';
 
@@ -87,11 +92,17 @@ export type DatePickerModel = DatePickerDate | DatePickerRangeObject;
 
 export type DatePickerContext = ReturnType<typeof createDatePicker>;
 
-export type DatePickerProps = Readonly<ExtractPropTypes<typeof propsDef>>;
+export type DatePickerProps = Readonly<ExtractPublicPropTypes<typeof propsDef>>;
+
+type DatePickerInternalProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 export const propsDef = {
   ...basePropsDef,
-  mode: { type: String, default: 'date' },
+  ...calendarPropsDef,
+  mode: {
+    type: String as PropType<DateModes>,
+    default: 'date',
+  },
   modelValue: {
     type: [Number, String, Date, Object] as PropType<DatePickerModel>,
   },
@@ -134,7 +145,7 @@ export const emits = [
 ];
 
 export function createDatePicker(
-  props: DatePickerProps,
+  props: DatePickerInternalProps,
   { emit, slots }: SetupContext<string[]>,
 ) {
   provideSlots(slots, { footer: 'dp-footer' });

@@ -1,0 +1,276 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JetBrains/web-types/master/schema/web-types.json",
+  "framework": "vue",
+  "name": "v-calendar-3",
+  "version": "1.2.0",
+  "js-types-syntax": "typescript",
+  "description-markup": "markdown",
+  "contributions": {
+    "html": {
+      "vue-components": [
+        {
+          "name": "Calendar",
+          "description": "Calendar component with month, week, and day views.",
+          "source": {
+            "file": "src/components/Calendar/Calendar.vue",
+            "offset": 0
+          },
+          "props": [
+            { "name": "color", "type": "string" },
+            {
+              "name": "isDark",
+              "type": "boolean | 'system' | { darkClass?: string; lightClass?: string }",
+              "default": "false"
+            },
+            { "name": "firstDayOfWeek", "type": "1 | 2 | 3 | 4 | 5 | 6 | 7" },
+            { "name": "masks", "type": "Record<string, string>" },
+            { "name": "locale", "type": "string | Record<string, unknown>" },
+            { "name": "timezone", "type": "string" },
+            { "name": "minDate", "type": "Date | string | number" },
+            { "name": "maxDate", "type": "Date | string | number" },
+            { "name": "disabledDates", "type": "unknown" },
+            {
+              "name": "view",
+              "type": "'daily' | 'weekly' | 'monthly'",
+              "default": "'monthly'"
+            },
+            { "name": "rows", "type": "number", "default": "1" },
+            { "name": "columns", "type": "number", "default": "1" },
+            { "name": "step", "type": "number" },
+            {
+              "name": "titlePosition",
+              "type": "'center' | 'left' | 'right'"
+            },
+            {
+              "name": "navVisibility",
+              "type": "'click' | 'hover' | 'hover-focus' | 'focus'"
+            },
+            { "name": "showWeeknumbers", "type": "boolean | string" },
+            { "name": "showIsoWeeknumbers", "type": "boolean | string" },
+            { "name": "expanded", "type": "boolean", "default": "false" },
+            { "name": "borderless", "type": "boolean", "default": "false" },
+            { "name": "transparent", "type": "boolean", "default": "false" },
+            { "name": "initialPage", "type": "{ month: number; year: number }" },
+            { "name": "initialPagePosition", "type": "number", "default": "1" },
+            { "name": "minPage", "type": "{ month: number; year: number }" },
+            { "name": "maxPage", "type": "{ month: number; year: number }" },
+            {
+              "name": "transition",
+              "type": "'none' | 'fade' | 'slide-v' | 'slide-h'"
+            },
+            { "name": "attributes", "type": "unknown[]" },
+            { "name": "trimWeeks", "type": "boolean", "default": "false" },
+            { "name": "disablePageSwipe", "type": "boolean", "default": "false" }
+          ],
+          "slots": [
+            { "name": "default" },
+            { "name": "day-content" },
+            { "name": "day-popover" },
+            { "name": "header-title" },
+            { "name": "nav-prev-button" },
+            { "name": "nav-next-button" }
+          ],
+          "js": {
+            "events": [
+              { "name": "dayclick" },
+              { "name": "daymouseenter" },
+              { "name": "daymouseleave" },
+              { "name": "dayfocusin" },
+              { "name": "dayfocusout" },
+              { "name": "daykeydown" },
+              { "name": "weeknumberclick" },
+              { "name": "transition-start" },
+              { "name": "transition-end" },
+              { "name": "did-move" },
+              { "name": "update:view" },
+              { "name": "update:pages" }
+            ]
+          }
+        },
+        {
+          "name": "VCalendar",
+          "extends": "/html/vue-components/Calendar",
+          "description": "Globally registered alias for `Calendar`.",
+          "source": {
+            "file": "src/components/Calendar/Calendar.vue",
+            "offset": 0
+          }
+        },
+        {
+          "name": "DatePicker",
+          "description": "Date, date-time, time, and range picker component.",
+          "source": {
+            "file": "src/components/DatePicker/DatePicker.vue",
+            "offset": 0
+          },
+          "props": [
+            { "name": "color", "type": "string" },
+            {
+              "name": "isDark",
+              "type": "boolean | 'system' | { darkClass?: string; lightClass?: string }",
+              "default": "false"
+            },
+            { "name": "firstDayOfWeek", "type": "1 | 2 | 3 | 4 | 5 | 6 | 7" },
+            { "name": "masks", "type": "Record<string, string>" },
+            { "name": "locale", "type": "string | Record<string, unknown>" },
+            { "name": "timezone", "type": "string" },
+            { "name": "minDate", "type": "Date | string | number" },
+            { "name": "maxDate", "type": "Date | string | number" },
+            { "name": "disabledDates", "type": "unknown" },
+            {
+              "name": "view",
+              "type": "'daily' | 'weekly' | 'monthly'",
+              "default": "'monthly'"
+            },
+            { "name": "rows", "type": "number", "default": "1" },
+            { "name": "columns", "type": "number", "default": "1" },
+            { "name": "step", "type": "number" },
+            {
+              "name": "titlePosition",
+              "type": "'center' | 'left' | 'right'"
+            },
+            {
+              "name": "navVisibility",
+              "type": "'click' | 'hover' | 'hover-focus' | 'focus'"
+            },
+            { "name": "showWeeknumbers", "type": "boolean | string" },
+            { "name": "showIsoWeeknumbers", "type": "boolean | string" },
+            { "name": "expanded", "type": "boolean", "default": "false" },
+            { "name": "borderless", "type": "boolean", "default": "false" },
+            { "name": "transparent", "type": "boolean", "default": "false" },
+            { "name": "initialPage", "type": "{ month: number; year: number }" },
+            { "name": "initialPagePosition", "type": "number", "default": "1" },
+            { "name": "minPage", "type": "{ month: number; year: number }" },
+            { "name": "maxPage", "type": "{ month: number; year: number }" },
+            {
+              "name": "transition",
+              "type": "'none' | 'fade' | 'slide-v' | 'slide-h'"
+            },
+            { "name": "trimWeeks", "type": "boolean", "default": "false" },
+            { "name": "disablePageSwipe", "type": "boolean", "default": "false" },
+            {
+              "name": "mode",
+              "type": "'date' | 'dateTime' | 'datetime' | 'time'",
+              "default": "'date'"
+            },
+            {
+              "name": "modelValue",
+              "type": "Date | string | number | { start: Date | string | number; end: Date | string | number } | null"
+            },
+            {
+              "name": "modelModifiers",
+              "type": "{ number?: boolean; string?: boolean; range?: boolean }"
+            },
+            { "name": "rules", "type": "'auto' | Record<string, unknown>" },
+            { "name": "is24hr", "type": "boolean", "default": "false" },
+            { "name": "hideTimeHeader", "type": "boolean", "default": "false" },
+            { "name": "timeAccuracy", "type": "number", "default": "2" },
+            { "name": "isRequired", "type": "boolean", "default": "false" },
+            { "name": "isRange", "type": "boolean", "default": "false" },
+            { "name": "updateOnInput", "type": "boolean" },
+            { "name": "inputDebounce", "type": "number" },
+            {
+              "name": "popover",
+              "type": "boolean | { visibility?: 'click' | 'hover' | 'hover-focus' | 'focus'; placement?: string; autoHide?: boolean; showDelay?: number; hideDelay?: number; teleport?: boolean }"
+            },
+            { "name": "dragAttribute", "type": "Record<string, unknown>" },
+            { "name": "selectAttribute", "type": "Record<string, unknown>" },
+            {
+              "name": "attributes",
+              "type": "Record<string, unknown> | Record<string, unknown>[]"
+            }
+          ],
+          "slots": [
+            { "name": "default" },
+            { "name": "footer" },
+            { "name": "day-content" },
+            { "name": "day-popover" },
+            { "name": "header-title" },
+            { "name": "nav-prev-button" },
+            { "name": "nav-next-button" }
+          ],
+          "html": {
+            "vue-model": {
+              "prop": "modelValue",
+              "event": "update:modelValue"
+            }
+          },
+          "js": {
+            "events": [
+              { "name": "update:modelValue" },
+              { "name": "drag" },
+              { "name": "dayclick" },
+              { "name": "daykeydown" },
+              { "name": "popover-will-show" },
+              { "name": "popover-did-show" },
+              { "name": "popover-will-hide" },
+              { "name": "popover-did-hide" }
+            ]
+          }
+        },
+        {
+          "name": "VDatePicker",
+          "extends": "/html/vue-components/DatePicker",
+          "description": "Globally registered alias for `DatePicker`.",
+          "source": {
+            "file": "src/components/DatePicker/DatePicker.vue",
+            "offset": 0
+          }
+        },
+        {
+          "name": "Popover",
+          "description": "Popover component used by calendars and date pickers.",
+          "source": {
+            "file": "src/components/Popover/Popover.vue",
+            "offset": 0
+          },
+          "props": [
+            { "name": "id", "type": "number | string | symbol", "required": true },
+            { "name": "showDelay", "type": "number", "default": "0" },
+            { "name": "hideDelay", "type": "number", "default": "110" },
+            { "name": "boundarySelector", "type": "string" }
+          ],
+          "slots": [{ "name": "default" }],
+          "js": {
+            "events": [
+              { "name": "before-show" },
+              { "name": "after-show" },
+              { "name": "before-hide" },
+              { "name": "after-hide" }
+            ]
+          }
+        },
+        {
+          "name": "VPopover",
+          "extends": "/html/vue-components/Popover",
+          "description": "Globally registered alias for `Popover`.",
+          "source": {
+            "file": "src/components/Popover/Popover.vue",
+            "offset": 0
+          }
+        },
+        {
+          "name": "PopoverRow",
+          "description": "Row renderer for calendar day popovers.",
+          "source": {
+            "file": "src/components/Popover/PopoverRow.vue",
+            "offset": 0
+          },
+          "props": [
+            { "name": "attribute", "type": "Attribute", "required": true }
+          ],
+          "slots": [{ "name": "default" }]
+        },
+        {
+          "name": "VPopoverRow",
+          "extends": "/html/vue-components/PopoverRow",
+          "description": "Globally registered alias for `PopoverRow`.",
+          "source": {
+            "file": "src/components/Popover/PopoverRow.vue",
+            "offset": 0
+          }
+        }
+      ]
+    }
+  }
+}

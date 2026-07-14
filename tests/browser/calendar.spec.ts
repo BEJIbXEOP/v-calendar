@@ -185,8 +185,20 @@ test('uses the iframe document theme and cleans up on unmount', async ({
   const frame = page.frameLocator('#theme-frame');
   await expect(frame.locator('#iframe-calendar')).toHaveClass(/vc-light/);
 
+  await frame.locator('#iframe-date-trigger').focus();
+  const iframePopover = frame.locator(
+    'body > .vc-popover-content-wrapper .vc-date-picker-content',
+  );
+  await expect(iframePopover).toBeVisible();
+  await expect(
+    page.locator(
+      'body > .vc-popover-content-wrapper .vc-date-picker-content',
+    ),
+  ).toHaveCount(0);
+
   await page.locator('#unmount-frame').click();
   await expect(frame.locator('#iframe-calendar')).toHaveCount(0);
+  await expect(iframePopover).toHaveCount(0);
 });
 
 test('closes popovers on outside pointer, Escape, focus loss, and trigger removal', async ({
@@ -209,6 +221,30 @@ test('closes popovers on outside pointer, Escape, focus loss, and trigger remova
   await page.locator('#click-trigger').click();
   await page.locator('#remove-click-trigger').click();
   await expect(page.locator('#click-popover-content')).toHaveCount(0);
+});
+
+test('teleports a date picker popover outside clipping ancestors and removes it on unmount', async ({
+  page,
+}) => {
+  await page.locator('#teleport-trigger').focus();
+
+  const teleportedPopover = page.locator(
+    'body > .vc-popover-content-wrapper .vc-date-picker-content',
+  );
+  await expect(teleportedPopover).toBeVisible();
+  await expect(
+    page.locator('#teleport-clipping-parent .vc-popover-content-wrapper'),
+  ).toHaveCount(0);
+
+  await page.locator('#outside').click();
+  await expect(teleportedPopover).toHaveCount(0);
+
+  await page.locator('#teleport-trigger').focus();
+  await expect(teleportedPopover).toBeVisible();
+
+  await page.locator('#toggle-teleported-picker').click();
+
+  await expect(teleportedPopover).toHaveCount(0);
 });
 
 test('removes media-query and popover listeners during unmount', async ({

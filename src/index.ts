@@ -4,6 +4,15 @@ import './styles/index.css';
 import { setVueInstance } from './utils/config/index';
 import { type Defaults, setupDefaults } from './utils/defaults';
 
+declare module 'vue' {
+  export interface GlobalComponents {
+    VCalendar: (typeof components)['Calendar'];
+    VDatePicker: (typeof components)['DatePicker'];
+    VPopover: (typeof components)['Popover'];
+    VPopoverRow: (typeof components)['PopoverRow'];
+  }
+}
+
 const install = (app: App, defaults: Defaults = {}) => {
   setVueInstance(app);
   app.use(setupDefaults, defaults);
@@ -22,3 +31,5 @@ export type { PopoverOptions } from './utils/popovers';
 
 export { createCalendar, useCalendar } from './use/calendar';
 export { createDatePicker, useDatePicker } from './use/datePicker';
+export type { CalendarProps } from './use/calendar';
+export type { DatePickerProps } from './use/datePicker';

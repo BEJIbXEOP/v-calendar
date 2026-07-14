@@ -1,46 +1,48 @@
 <template>
-  <div
-    class="vc-popover-content-wrapper"
-    :class="{ 'is-interactive': isInteractive }"
-    ref="popoverRef"
-    @click="onClick"
-    @mouseover="onMouseOver"
-    @mouseleave="onMouseLeave"
-    @focusin="onFocusIn"
-    @focusout="onFocusOut"
-  >
-    <Transition
-      :name="`vc-${transition}`"
-      appear
-      @before-enter="beforeEnter"
-      @after-enter="afterEnter"
-      @before-leave="beforeLeave"
-      @after-leave="afterLeave"
+  <Teleport :to="teleportTarget" :disabled="teleportTarget == null">
+    <div
+      class="vc-popover-content-wrapper"
+      :class="{ 'is-interactive': isInteractive }"
+      ref="popoverRef"
+      @click="onClick"
+      @mouseover="onMouseOver"
+      @mouseleave="onMouseLeave"
+      @focusin="onFocusIn"
+      @focusout="onFocusOut"
     >
-      <div
-        v-if="isVisible"
-        tabindex="-1"
-        :class="`vc-popover-content direction-${direction}`"
-        v-bind="$attrs"
+      <Transition
+        :name="`vc-${transition}`"
+        appear
+        @before-enter="beforeEnter"
+        @after-enter="afterEnter"
+        @before-leave="beforeLeave"
+        @after-leave="afterLeave"
       >
-        <slot
-          :direction="direction"
-          :alignment="alignment"
-          :data="data"
-          :hide="hide"
+        <div
+          v-if="isVisible"
+          tabindex="-1"
+          :class="`vc-popover-content direction-${direction}`"
+          v-bind="$attrs"
         >
-          {{ data }}
-        </slot>
-        <span
-          :class="[
-            'vc-popover-caret',
-            `direction-${direction}`,
-            `align-${alignment}`,
-          ]"
-        />
-      </div>
-    </Transition>
-  </div>
+          <slot
+            :direction="direction"
+            :alignment="alignment"
+            :data="data"
+            :hide="hide"
+          >
+            {{ data }}
+          </slot>
+          <span
+            :class="[
+              'vc-popover-caret',
+              `direction-${direction}`,
+              `align-${alignment}`,
+            ]"
+          />
+        </div>
+      </Transition>
+    </div>
+  </Teleport>
 </template>
 
 <script lang="ts">
@@ -102,6 +104,12 @@ export default defineComponent({
       isFocused: false,
       autoHide: false,
       force: false,
+      teleport: false,
+    });
+
+    const teleportTarget = computed(() => {
+      if (!state.teleport) return null;
+      return resolveEl(state.target)?.ownerDocument?.body ?? null;
     });
 
     function updateDirection(placement?: string) {
@@ -433,6 +441,7 @@ export default defineComponent({
     return {
       ...toRefs(state),
       popoverRef,
+      teleportTarget,
       alignment,
       hide,
       setupPopper,

@@ -11,6 +11,7 @@ interface DatePickerPopoverDefaults {
   visibility?: string;
   placement?: string;
   isInteractive?: boolean;
+  teleport?: boolean;
 }
 
 interface DatePickerDefaults {

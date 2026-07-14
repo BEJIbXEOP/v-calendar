@@ -16,6 +16,7 @@ export interface PopoverOptions {
   data: any;
   showDelay: number;
   hideDelay: number;
+  teleport?: boolean;
 }
 
 export interface PopoverState {
@@ -33,6 +34,7 @@ export interface PopoverState {
   isFocused: boolean;
   autoHide: boolean;
   force: boolean;
+  teleport: boolean;
 }
 
 export interface PopoverEvent {

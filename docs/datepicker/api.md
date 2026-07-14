@@ -116,6 +116,7 @@ interface PopoverOptions {
   autoHide: boolean; // Auto-hide popover based on visibility
   showDelay: number; // Delay (ms) before popover is shown
   hideDelay: number; // Delay (ms) before popover is hidden
+  teleport?: boolean; // Render under the trigger document body
 }
 
 type PopoverVisibility = 'click' | 'hover' | 'hover-focus' | 'focus';

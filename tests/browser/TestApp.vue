@@ -83,6 +83,27 @@
       <span id="focus-popover-content">Focus content</span>
     </Popover>
 
+    <section
+      id="teleport-clipping-parent"
+      style="position: relative; width: 240px; height: 40px; overflow: hidden"
+    >
+      <DatePicker
+        v-if="showTeleportedPicker"
+        v-model="teleportedDate"
+        :initial-page="initialPage"
+        :popover="teleportedPopover"
+      >
+        <template #default="{ inputValue, inputEvents }">
+          <button id="teleport-trigger" type="button" v-on="inputEvents">
+            {{ inputValue || 'Open teleported date picker' }}
+          </button>
+        </template>
+      </DatePicker>
+    </section>
+    <button id="toggle-teleported-picker" @click="showTeleportedPicker = false">
+      Unmount teleported date picker
+    </button>
+
     <button id="toggle-lifecycle" @click="showLifecycle = !showLifecycle">
       Toggle lifecycle
     </button>
@@ -122,6 +143,8 @@ const selectedDateLabel = computed(() => {
 const showAutomatic = ref(true);
 const showClickTrigger = ref(true);
 const showLifecycle = ref(false);
+const showTeleportedPicker = ref(true);
+const teleportedDate = ref<Date | null>(null);
 const iframeRef = ref<HTMLIFrameElement>();
 let iframeApp: App<Element> | null = null;
 
@@ -135,6 +158,20 @@ const focusPopover = {
   visibility: 'focus' as const,
   hideDelay: 0,
 };
+const teleportedPopover = {
+  visibility: 'hover-focus' as const,
+  hideDelay: 0,
+  teleport: true,
+};
+
+function asVNodeListeners(handlers: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(handlers).map(([event, handler]) => [
+      `on${event.charAt(0).toUpperCase()}${event.slice(1)}`,
+      handler,
+    ]),
+  );
+}
 
 function unmountFrame() {
   iframeApp?.unmount();
@@ -152,11 +189,40 @@ onMounted(() => {
   iframeApp = createApp(
     defineComponent({
       render: () =>
-        h(Calendar, {
-          id: 'iframe-calendar',
-          isDark: 'system',
-          initialPage,
-        }),
+        h('div', [
+          h(Calendar, {
+            id: 'iframe-calendar',
+            isDark: 'system',
+            initialPage,
+          }),
+          h(
+            DatePicker,
+            {
+              initialPage,
+              popover: {
+                visibility: 'hover-focus',
+                hideDelay: 0,
+                teleport: true,
+              },
+            },
+            {
+              default: ({
+                inputEvents,
+              }: {
+                inputEvents: Record<string, unknown>;
+              }) =>
+                h(
+                  'button',
+                  {
+                    id: 'iframe-date-trigger',
+                    type: 'button',
+                    ...asVNodeListeners(inputEvents),
+                  },
+                  'Open iframe date picker',
+                ),
+            },
+          ),
+        ]),
     }),
   );
   iframeApp.mount(host);

@@ -4,7 +4,7 @@ A maintained Vue 3 calendar and date picker with TypeScript declarations,
 timezone support, keyboard navigation, touch interaction, and responsive theme
 handling.
 
-Current version: `1.1.0`
+Current version: `1.2.0`
 
 ## Features
 
@@ -17,6 +17,7 @@ Current version: `1.1.0`
 - Keyboard navigation, Escape handling, Pointer Events, and touch support
 - SSR-safe browser access and iframe-aware theme/popover handling
 - ESM, Node ESM, CommonJS, IIFE, CSS, and TypeScript declaration builds
+- Vue component metadata for PhpStorm and other JetBrains IDEs
 
 ## Requirements
 
@@ -75,6 +76,10 @@ const selectedDate = ref<Date | null>(new Date());
 ```
 
 The component prefix defaults to `V` and can be changed during plugin setup.
+The package publishes global component types for the default `VCalendar`,
+`VDatePicker`, `VPopover`, and `VPopoverRow` names. Custom prefixes are runtime
+configuration and must be declared in the consuming application's
+`GlobalComponents` interface if template autocomplete is required.
 
 ```ts
 app.use(VCalendar, {
@@ -127,6 +132,13 @@ app.use(setupCalendar, {
 });
 ```
 
+The package ships both Vue TypeScript declarations and JetBrains Web Types.
+PhpStorm can therefore complete component props and navigate from imported
+`Calendar` and `DatePicker` tags to their declarations without application-side
+shims. After changing between local `file:` package versions, let the package
+manager refresh the link and ask PhpStorm to reload the project indexes if it
+still shows cached generic Vue metadata.
+
 ## Date picker modes
 
 The default model is a JavaScript `Date`. Use the `range` modifier for date
@@ -174,6 +186,19 @@ visibility.
 
 For a range picker, `inputValue` and `inputEvents` contain separate `start` and
 `end` properties.
+
+If an ancestor clips overflow, teleport the popover to the trigger's document
+body. This also works when the date picker is mounted inside an iframe.
+
+```vue
+<VDatePicker
+  v-model="date"
+  :popover="{
+    visibility: 'hover-focus',
+    teleport: true,
+  }"
+/>
+```
 
 ## Bounds and disabled dates
 

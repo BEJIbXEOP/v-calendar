@@ -1,5 +1,6 @@
 import {
   type ExtractPropTypes,
+  type ExtractPublicPropTypes,
   type PropType,
   type SetupContext,
   computed,
@@ -76,14 +77,15 @@ export type DayCells = Record<
   { day: CalendarDay; cells: DateRangeCell<Attribute>[] }
 >;
 
-export type CalendarProps = Readonly<ExtractPropTypes<typeof propsDef>>;
+export type CalendarProps = Readonly<ExtractPublicPropTypes<typeof propsDef>>;
+
+type CalendarInternalProps = Readonly<ExtractPropTypes<typeof propsDef>>;
 
 type IContainer = Pick<Element, 'querySelector'> & CustomElement;
 
 export type CalendarContext = ReturnType<typeof createCalendar>;
 
-export const propsDef = {
-  ...basePropsDef,
+export const calendarPropsDef = {
   view: {
     type: String as PropType<CalendarView>,
     default: 'monthly',
@@ -123,6 +125,11 @@ export const propsDef = {
   disablePageSwipe: Boolean,
 };
 
+export const propsDef = {
+  ...basePropsDef,
+  ...calendarPropsDef,
+};
+
 export const emitsDef = [
   'dayclick',
   'daymouseenter',
@@ -141,7 +148,7 @@ export const emitsDef = [
 const contextKey = Symbol('__vc_calendar_context__');
 
 export function createCalendar(
-  props: CalendarProps,
+  props: CalendarInternalProps,
   { slots, emit }: Pick<SetupContext, 'slots' | 'emit'>,
 ) {
   // #region Refs
