@@ -18,7 +18,7 @@
   >
     <!--Calendar Container-->
     <div :class="['vc-pane-container', { 'in-transition': inTransition }]">
-      <div class="vc-pane-header-wrapper">
+      <div v-if="!isPeriodLayout" class="vc-pane-header-wrapper">
         <CalendarHeader v-if="firstPage" :page="firstPage!" is-lg hide-title />
       </div>
       <Transition
@@ -31,7 +31,7 @@
           :key="pages[0].id"
           class="vc-pane-layout"
           :style="{
-            gridTemplateColumns: `repeat(${columns}, 1fr)`,
+            gridTemplateColumns: `repeat(${layoutColumns}, 1fr)`,
           }"
         >
           <!--Calendar pages-->

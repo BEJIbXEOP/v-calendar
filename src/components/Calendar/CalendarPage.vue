@@ -9,7 +9,12 @@
     ]"
     ref="pane"
   >
-    <CalendarHeader :page="page" is-lg hide-arrows />
+    <CalendarHeader
+      :page="page"
+      is-lg
+      :hide-arrows="!isPeriodLayout"
+      :period-navigation="isPeriodLayout"
+    />
     <div
       class="vc-weeks"
       :class="{
@@ -64,7 +69,7 @@ import { useCalendar } from '../../use/calendar';
 import { usePage } from '../../use/page';
 
 const { page } = usePage();
-const { onWeeknumberClick } = useCalendar();
+const { isPeriodLayout, onWeeknumberClick } = useCalendar();
 </script>
 
 <style lang="css">

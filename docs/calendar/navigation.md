@@ -26,7 +26,10 @@ There are 2 primary methods for navigating the calendar within the header.
 
 By default, the calendar will navigate to the month following the last current displayed month when navigating forwards. Conversely, it will navigate to the month preceding the first month when navigating backwards.
 
-This default step amount is equal to the number of rows multiplied by the number of columns in a given layout (2 rows x 1 column = 2).
+This default step amount is equal to the number of rows multiplied by the number
+of columns in a given layout. The `rows="2"`, `columns="1"` period layout is the
+exception: each pane has its own header and either header moves the consecutive
+two-month period by one month.
 
 <Example centered>
   <VCalendar :rows="2" />

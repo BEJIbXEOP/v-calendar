@@ -85,6 +85,7 @@
   --vc-day-content-width: 28px;
   --vc-day-content-height: 28px;
   --vc-day-content-line-height: 28px;
+  --vc-day-content-outside-month-opacity: 0.6;
   --vc-highlight-width: var(--vc-day-content-width);
   --vc-highlight-height: var(--vc-day-content-height);
 

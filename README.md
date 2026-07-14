@@ -4,7 +4,7 @@ A maintained Vue 3 calendar and date picker with TypeScript declarations,
 timezone support, keyboard navigation, touch interaction, and responsive theme
 handling.
 
-Current version: `1.0.1`
+Current version: `1.1.0`
 
 ## Features
 
@@ -112,7 +112,7 @@ const attributes = [
 <template>
   <Calendar :attributes="attributes" />
   <DatePicker v-model="selectedDate" />
-  <DatePicker v-model.range="range" />
+  <DatePicker v-model.range="range" :rows="2" />
 </template>
 ```
 
@@ -138,6 +138,13 @@ ranges and the `mode` prop when time selection is required.
 <DatePicker v-model="dateTime" mode="dateTime" is24hr />
 <DatePicker v-model="time" mode="time" is24hr />
 ```
+
+`rows="2"` with the default `columns="1"` is the two-month period layout. It
+renders both months horizontally with a complete navigation header and a
+month/year picker on each pane. The displayed months remain consecutive, and
+each pane includes muted leading and trailing dates from adjacent months so its
+week rows are complete. With `trim-weeks`, both period panes are balanced to the
+larger visible week count.
 
 The `string` and `number` model modifiers are also supported. Numeric values use
 JavaScript timestamp milliseconds.
@@ -234,6 +241,7 @@ styles to internal selectors.
   --vc-day-min-height: 1.75rem;
   --vc-day-content-width: 1.75rem;
   --vc-day-content-height: 1.75rem;
+  --vc-day-content-outside-month-opacity: 0.6;
   --vc-highlight-width: 1.75rem;
   --vc-highlight-height: 1.75rem;
   --vc-header-margin-top: 0;

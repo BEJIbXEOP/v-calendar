@@ -183,6 +183,16 @@ export function createCalendar(
 
   const count = computed(() => props.rows * props.columns);
 
+  const isPeriodLayout = computed(
+    () => props.rows === 2 && props.columns === 1,
+  );
+
+  const layoutRows = computed(() => (isPeriodLayout.value ? 1 : props.rows));
+
+  const layoutColumns = computed(() =>
+    isPeriodLayout.value ? 2 : props.columns,
+  );
+
   const step = computed(() => props.step || count.value);
 
   const firstPage = computed(() => head(_pages.value) ?? null);
@@ -404,10 +414,10 @@ export function createCalendar(
       for (let i = 0; i < count.value; i++) {
         const newPage = addPages(fromPage!, i);
         const position = i + 1;
-        const row = Math.ceil(position / props.columns);
-        const rowFromEnd = props.rows - row + 1;
-        const column = position % props.columns || props.columns;
-        const columnFromEnd = props.columns - column + 1;
+        const row = Math.ceil(position / layoutColumns.value);
+        const rowFromEnd = layoutRows.value - row + 1;
+        const column = position % layoutColumns.value || layoutColumns.value;
+        const columnFromEnd = layoutColumns.value - column + 1;
         const weeknumberPosition = getWeeknumberPosition(column, columnFromEnd);
         pages.push(
           locale.value.getPage({
@@ -425,6 +435,14 @@ export function createCalendar(
             weeknumberPosition,
           }),
         );
+      }
+      if (isPeriodLayout.value && isMonthly.value) {
+        const weekCount = Math.max(
+          ...pages.map(currentPage => currentPage.viewWeeks.length),
+        );
+        pages.forEach(currentPage => {
+          currentPage.viewWeeks = currentPage.weeks.slice(0, weekCount);
+        });
       }
       // Assign the transition
       transitionName.value = getPageTransition(
@@ -518,6 +536,18 @@ export function createCalendar(
 
   const moveNext = () => {
     return moveBy(step.value);
+  };
+
+  const canMovePeriodPrev = computed(() => canMoveBy(-1));
+
+  const canMovePeriodNext = computed(() => canMoveBy(1));
+
+  const movePeriodPrev = () => {
+    return moveBy(-1);
+  };
+
+  const movePeriodNext = () => {
+    return moveBy(1);
   };
 
   const tryFocusDate = (date: Date) => {
@@ -688,10 +718,7 @@ export function createCalendar(
     },
   );
 
-  watch(
-    () => count.value,
-    () => refreshPages(),
-  );
+  watch([count, layoutRows, layoutColumns], () => refreshPages());
 
   watch(
     () => props.view,
@@ -751,6 +778,9 @@ export function createCalendar(
     dayCells,
     count,
     step,
+    isPeriodLayout,
+    layoutRows,
+    layoutColumns,
     firstPage,
     lastPage,
     canMovePrev,
@@ -770,6 +800,10 @@ export function createCalendar(
     moveBy,
     movePrev,
     moveNext,
+    canMovePeriodPrev,
+    canMovePeriodNext,
+    movePeriodPrev,
+    movePeriodNext,
     onTransitionBeforeEnter,
     onTransitionAfterEnter,
     tryFocusDate,

@@ -17,12 +17,35 @@
       style="
         --vc-day-content-width: 31px;
         --vc-day-content-height: 31px;
+        --vc-day-content-outside-month-opacity: 0.35;
         --vc-header-margin-top: 0px;
         --vc-pane-min-width: 220px;
         --vc-time-picker-flex-direction: row;
         --vc-time-select-group-icon-display: none;
         --vc-time-select-bg: rgb(1, 2, 3);
         --vc-select-width: 22px;
+      "
+    />
+
+    <Calendar
+      id="period-calendar"
+      :rows="2"
+      :initial-page="initialPage"
+      transition="none"
+    />
+    <Calendar
+      id="balanced-period-calendar"
+      :rows="2"
+      trim-weeks
+      :initial-page="{ year: 2020, month: 8 }"
+      transition="none"
+      style="
+        --vc-pane-min-width: 190px;
+        --vc-pane-max-width: 190px;
+        --vc-weeks-min-width: 190px;
+        --vc-weeks-max-width: 190px;
+        --vc-header-title-font-size: 18px;
+        --vc-header-padding: 0 10px;
       "
     />
 

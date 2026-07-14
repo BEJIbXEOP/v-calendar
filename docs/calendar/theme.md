@@ -232,6 +232,7 @@ list of variables and fallback values.
   --vc-day-content-width: 1.75rem;
   --vc-day-content-height: 1.75rem;
   --vc-day-content-line-height: 1.75rem;
+  --vc-day-content-outside-month-opacity: 0.6;
   --vc-highlight-width: 1.75rem;
   --vc-highlight-height: 1.75rem;
   --vc-header-margin-top: 0;

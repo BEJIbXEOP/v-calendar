@@ -246,15 +246,14 @@ export default defineComponent({
   position: relative;
   min-height: var(--vc-day-min-height);
   z-index: 1;
-  /* &.is-not-in-month * {
-    opacity: 0;
-    pointer-events: none;
-  } */
 }
 
 .vc-monthly .is-not-in-month * {
-  opacity: 0;
   pointer-events: none;
+}
+
+.vc-monthly .is-not-in-month .vc-day-content {
+  opacity: var(--vc-day-content-outside-month-opacity);
 }
 
 .vc-day-layer {

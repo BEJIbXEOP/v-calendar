@@ -178,7 +178,12 @@ The slot may also be applied to date pickers.
 
 ## Multiple Rows & Columns
 
-Use the `rows` and `columns` props to create multi-row and multi-column static layouts.
+Use the `rows` and `columns` props to create static multi-pane layouts.
+
+The two-page period layout (`rows="2"`, `columns="1"`) is displayed
+horizontally. Each pane has its own complete navigation header, including its
+month/year picker. The pages remain consecutive and either header advances the
+period by one month.
 
 <Example centered>
   <VCalendar :rows="2"/>
@@ -187,6 +192,21 @@ Use the `rows` and `columns` props to create multi-row and multi-column static l
 ```html
 <VCalendar :rows="2" />
 ```
+
+Use `columns` for other horizontal layouts and combinations of `rows` and
+`columns` for larger grids. Layouts other than the two-page period layout retain
+the shared navigation header.
+
+Every monthly pane displays the leading and trailing dates needed to complete
+its week rows. For example, when a month starts on Tuesday in a Monday-first
+locale, the preceding Monday is shown as an adjacent-month date. These cells are
+visually muted and non-interactive so the same date does not become selectable
+in two neighboring panes.
+
+When `trim-weeks` is enabled for the two-page period layout, both panes use the
+larger month-specific week count. A six-week month paired with a five-week month
+therefore renders as six rows in both panes; two five-week months remain at five
+rows.
 
 ## Responsive Layouts
 

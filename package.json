@@ -1,7 +1,7 @@
 {
   "name": "v-calendar-3",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A calendar and date picker plugin for Vue 3.",
   "author": "ujidesu",
   "repository": {

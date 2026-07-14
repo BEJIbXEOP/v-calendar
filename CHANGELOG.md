@@ -1,12 +1,16 @@
-## 1.0.1 (`v-calendar-3`)
+## 1.1.0 (`v-calendar-3`)
 
 ### Breaking Changes
 
-* The package is published as `v-calendar-3` at version `1.0.1`. Replace imports
-  from `v-calendar-fixed` with `v-calendar-3`; this version reset is a new package
-  lineage, not a downgrade from `v-calendar-fixed@3.1.9`.
+* The package is published as `v-calendar-3`. Replace imports from
+  `v-calendar-fixed` with `v-calendar-3`; the `1.0.1` version reset started a new
+  package lineage and was not a downgrade from `v-calendar-fixed@3.1.9`.
 * Package development now requires Node.js `^20.19.0 || >=22.12.0`. The
-  browser-facing Vue API remains unchanged.
+  component names, prop/event/slot names, exports, and TypeScript types remain
+  unchanged.
+* The `rows="2"`, `columns="1"` layout is now a horizontal two-month period
+  calendar with navigation controls on both panes. Code that relied on this
+  exact configuration being vertical must update its layout.
 
 ### Bug Fixes
 
@@ -32,6 +36,11 @@
 
 * Expose stable CSS custom properties for calendar dimensions, header spacing,
   day and highlight geometry, time-picker layout, and select controls.
+* Display leading and trailing dates from adjacent months with configurable
+  dimming instead of rendering those generated grid cells as invisible gaps.
+* Keep both panes in a trimmed two-month period calendar at the same week count.
+* Keep arrows and long month titles contained within compact period panes.
+
 
 ## 3.0.0-alpha.7
 

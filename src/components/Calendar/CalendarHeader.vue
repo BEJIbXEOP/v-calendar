@@ -8,11 +8,11 @@
       v-if="show.prev"
       type="button"
       class="vc-arrow vc-prev vc-focus"
-      :disabled="!canMovePrev"
-      @click="movePrev"
-      @keydown.space.enter="movePrev"
+      :disabled="!canMovePrev_"
+      @click="movePrev_"
+      @keydown.space.enter="movePrev_"
     >
-      <CalendarSlot name="header-prev-button" :disabled="!canMovePrev">
+      <CalendarSlot name="header-prev-button" :disabled="!canMovePrev_">
         <BaseIcon name="ChevronLeft" size="24" />
       </CalendarSlot>
     </button>
@@ -29,11 +29,11 @@
       v-if="show.next"
       type="button"
       class="vc-arrow vc-next vc-focus"
-      :disabled="!canMoveNext"
-      @click="moveNext"
-      @keydown.space.enter="moveNext"
+      :disabled="!canMoveNext_"
+      @click="moveNext_"
+      @keydown.space.enter="moveNext_"
     >
-      <CalendarSlot name="header-next-button" :disabled="!canMoveNext">
+      <CalendarSlot name="header-next-button" :disabled="!canMoveNext_">
         <BaseIcon name="ChevronRight" size="24" />
       </CalendarSlot>
     </button>
@@ -56,6 +56,7 @@ const props = defineProps<{
   is2xl?: boolean;
   hideTitle?: boolean;
   hideArrows?: boolean;
+  periodNavigation?: boolean;
 }>();
 
 const {
@@ -65,7 +66,22 @@ const {
   movePrev,
   canMoveNext,
   moveNext,
+  canMovePeriodPrev,
+  canMovePeriodNext,
+  movePeriodPrev,
+  movePeriodNext,
 } = useCalendar();
+
+const canMovePrev_ = computed(() =>
+  props.periodNavigation ? canMovePeriodPrev.value : canMovePrev.value,
+);
+const canMoveNext_ = computed(() =>
+  props.periodNavigation ? canMovePeriodNext.value : canMoveNext.value,
+);
+const movePrev_ = () =>
+  props.periodNavigation ? movePeriodPrev() : movePrev();
+const moveNext_ = () =>
+  props.periodNavigation ? movePeriodNext() : moveNext();
 
 const navPlacement = computed(() => {
   switch (props.page.titlePosition) {
@@ -104,6 +120,12 @@ const show = computed(() => {
   };
 });
 const gridStyle = computed(() => {
+  if (props.periodNavigation && !props.layout) {
+    return {
+      gridTemplateColumns:
+        '[prev] auto [title] minmax(0, 1fr) [next] auto',
+    };
+  }
   const gridTemplateColumns = layout_.value
     .split('')
     .map(l => {
@@ -128,6 +150,8 @@ const gridStyle = computed(() => {
 <style lang="css">
 .vc-header {
   display: grid;
+  width: 100%;
+  min-width: 0;
   grid-gap: var(--vc-header-gap);
   align-items: center;
   height: var(--vc-header-height);
@@ -147,6 +171,8 @@ const gridStyle = computed(() => {
   .vc-title-wrapper {
     grid-row: 1;
     grid-column: title;
+    min-width: 0;
+    justify-self: center;
   }
   .vc-prev {
     grid-row: 1;
@@ -175,6 +201,9 @@ const gridStyle = computed(() => {
     font-weight: var(--vc-font-semibold);
     text-transform: var(--vc-header-title-text-transform);
     white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: var(--vc-header-title-padding);
     margin: 0;
     line-height: var(--vc-header-title-line-height);
